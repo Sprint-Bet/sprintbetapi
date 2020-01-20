@@ -3,6 +3,7 @@ using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
+using PlanningPoker.Hubs;
 
 namespace PlanningPoker
 {
@@ -18,6 +19,16 @@ namespace PlanningPoker
         // This method gets called by the runtime. Use this method to add services to the container.
         public void ConfigureServices(IServiceCollection services)
         {
+            services.AddCors(options => options.AddPolicy("CorsPolicy", builder =>
+            {
+                builder.AllowAnyMethod()
+                    .AllowAnyHeader()
+                    .AllowCredentials()
+                    .WithOrigins("http://localhost:4200");
+            }));
+
+            services.AddSignalR();
+
             services.AddMvc().SetCompatibilityVersion(CompatibilityVersion.Version_2_2);
         }
 
@@ -35,6 +46,11 @@ namespace PlanningPoker
             }
 
             app.UseHttpsRedirection();
+
+            app.UseCors("CorsPolicy");
+
+            app.UseSignalR(routes => routes.MapHub<NotifyHub>("/notify"));
+
             app.UseMvc();
         }
     }
