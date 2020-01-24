@@ -9,23 +9,23 @@ namespace PlanningPoker.Controllers
 {
     [Route("api/[controller]")]
     [ApiController]
-    public class MessageController : ControllerBase
+    public class VoteController : ControllerBase
     {
         private IHubContext<NotifyHub, IHubClient> _hubContext;
 
-        public MessageController(IHubContext<NotifyHub, IHubClient> hubContext)
+        public VoteController(IHubContext<NotifyHub, IHubClient> hubContext)
         {
             _hubContext = hubContext;
         }
 
         [HttpPost]
-        public string Post([FromBody]Message message)
+        public string Post([FromBody]Vote vote)
         {
             string returnMessage;
 
             try
             {
-                _hubContext.Clients.All.BroadcastMessage(message.Type, message.Payload);
+                _hubContext.Clients.All.BroadcastVote(vote.Name, vote.Point);
                 returnMessage = "Success";
             }
             catch (Exception error)

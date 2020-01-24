@@ -4,6 +4,6 @@ namespace PlanningPoker.Interfaces
 {
     public interface IHubClient
     {
-        Task BroadcastMessage(string type, string payload);
+        Task BroadcastVote(string name, string point);
     }
 }

@@ -1,20 +1,15 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
-
-namespace PlanningPoker.Dtos
+﻿namespace PlanningPoker.Dtos
 {
-    public class Message
+    public class Vote
     {
         /// <summary>
-        ///     Message type
+        ///     Voter's name
         /// </summary>
-        public string Type { get; set; }
+        public string Name { get; set; }
 
         /// <summary>
-        ///     Message payload
+        ///     Voter's estimate/point
         /// </summary>
-        public string Payload { get; set; }
+        public string Point { get; set; }
     }
 }

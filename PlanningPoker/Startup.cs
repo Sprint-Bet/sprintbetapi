@@ -24,7 +24,7 @@ namespace PlanningPoker
                 builder.AllowAnyMethod()
                     .AllowAnyHeader()
                     .AllowCredentials()
-                    .WithOrigins("http://localhost:4200");
+                    .WithOrigins("http://localhost:4200", "http://localhost:8888");
             }));
 
             services.AddSignalR();
