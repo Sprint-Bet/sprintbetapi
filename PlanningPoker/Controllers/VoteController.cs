@@ -25,7 +25,7 @@ namespace PlanningPoker.Controllers
 
             try
             {
-                _hubContext.Clients.All.BroadcastVote(vote.Name, vote.Point);
+                _hubContext.Clients.All.BroadcastVote(vote);
                 returnMessage = "Success";
             }
             catch (Exception error)

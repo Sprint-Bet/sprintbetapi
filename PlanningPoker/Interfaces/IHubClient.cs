@@ -1,9 +1,10 @@
-﻿using System.Threading.Tasks;
+﻿using PlanningPoker.Dtos;
+using System.Threading.Tasks;
 
 namespace PlanningPoker.Interfaces
 {
     public interface IHubClient
     {
-        Task BroadcastVote(string name, string point);
+        Task BroadcastVote(Vote vote);
     }
 }
