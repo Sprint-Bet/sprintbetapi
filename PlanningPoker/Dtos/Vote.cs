@@ -2,6 +2,14 @@
 {
     public class Vote
     {
+        public Vote() { }
+
+        public Vote(string name, string point)
+        {
+            Name = name;
+            Point = point;
+        }
+
         /// <summary>
         ///     Voter's name
         /// </summary>
