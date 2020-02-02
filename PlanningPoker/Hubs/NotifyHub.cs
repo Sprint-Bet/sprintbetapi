@@ -4,34 +4,41 @@ using System.Threading.Tasks;
 using Microsoft.AspNetCore.SignalR;
 using PlanningPoker.Dtos;
 using PlanningPoker.Interfaces;
+using PlanningPoker.Services;
 
 namespace PlanningPoker.Hubs
 {
     public class NotifyHub: Hub<IHubClient>
     {
-        private Dictionary<string, Vote> _connections = new Dictionary<string, Vote>();
+        private VoterService _voterService;
 
         /// <summary>
-        ///     Add this client to the list of clients when connected
+        ///     Constructor for the notify hub
+        /// </summary>
+        /// <param name="voterService"></param>
+        public NotifyHub(VoterService voterService)
+        {
+            _voterService = voterService;
+        }
+
+        /// <summary>
+        ///     Override, add voter id to list of clients
         /// </summary>
         /// <returns></returns>
         public override Task OnConnectedAsync()
         {
-            var id = Context.ConnectionId;
-            var vote = new Vote("John", "3");
-            _connections.Add(id, vote);
-
+            _voterService.AddVoter(Context.ConnectionId);
             return base.OnConnectedAsync();
         }
 
         /// <summary>
-        ///     Remove this client to the list of clients when disconnecting
+        ///     Override, Remove this client to the list of clients when disconnecting
         /// </summary>
         /// <returns></returns>
         public override Task OnDisconnectedAsync(Exception exception)
         {
             var id = Context.ConnectionId;
-            _connections.Remove(id);
+            _voterService.RemoveVoter(id);
 
             return base.OnDisconnectedAsync(exception);
         }

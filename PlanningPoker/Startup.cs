@@ -4,6 +4,7 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using PlanningPoker.Hubs;
+using PlanningPoker.Services;
 
 namespace PlanningPoker
 {
@@ -29,6 +30,8 @@ namespace PlanningPoker
 
             services.AddSignalR();
 
+            services.AddSingleton<VoterService>();
+
             services.AddMvc().SetCompatibilityVersion(CompatibilityVersion.Version_2_2);
         }
 
@@ -49,7 +52,7 @@ namespace PlanningPoker
 
             app.UseCors("CorsPolicy");
 
-            app.UseSignalR(routes => routes.MapHub<NotifyHub>("/notify"));
+            app.UseSignalR(routes => routes.MapHub<NotifyHub>("/api/notify"));
 
             app.UseMvc();
         }

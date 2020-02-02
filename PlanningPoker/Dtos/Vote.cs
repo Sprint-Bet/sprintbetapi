@@ -2,8 +2,17 @@
 {
     public class Vote
     {
+        /// <summary>
+        ///     Constructor 1
+        /// </summary>
         public Vote() { }
 
+
+        /// <summary>
+        ///     Constructor 2
+        /// </summary>
+        /// <param name="name"></param>
+        /// <param name="point"></param>
         public Vote(string name, string point)
         {
             Name = name;
