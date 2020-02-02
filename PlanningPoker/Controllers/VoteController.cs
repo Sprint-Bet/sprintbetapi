@@ -3,7 +3,9 @@ using Microsoft.AspNetCore.SignalR;
 using PlanningPoker.Dtos;
 using PlanningPoker.Hubs;
 using PlanningPoker.Interfaces;
+using PlanningPoker.Services;
 using System;
+using System.Collections.Generic;
 
 namespace PlanningPoker.Controllers
 {
@@ -12,10 +14,21 @@ namespace PlanningPoker.Controllers
     public class VoteController : ControllerBase
     {
         private IHubContext<NotifyHub, IHubClient> _hubContext;
+        private VoterService _voterService;
 
-        public VoteController(IHubContext<NotifyHub, IHubClient> hubContext)
+        public VoteController(IHubContext<NotifyHub, IHubClient> hubContext, VoterService voterService)
         {
             _hubContext = hubContext;
+            _voterService = voterService;
+        }
+
+        [HttpPost("setup")]
+        public Dictionary<string, Vote> setupVoter([FromBody]string name, string id)
+        {
+            var voters = this._voterService.GetAllVoters();
+            voters[id].Name = name;
+            //_hubContext.Clients.AllExcept(id).PlayerAdded(name);
+            return voters;
         }
 
         [HttpPost]
