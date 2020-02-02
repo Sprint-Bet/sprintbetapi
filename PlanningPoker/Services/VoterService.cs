@@ -12,6 +12,11 @@ namespace PlanningPoker.Services
             return _voters;
         }
 
+        public Vote GetVoterById(string id)
+        {
+            return _voters[id];
+        }
+
         public void AddVoter(string id)
         {
             _voters.Add(id, new Vote());

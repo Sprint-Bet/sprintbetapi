@@ -22,15 +22,17 @@ namespace PlanningPoker.Controllers
             _voterService = voterService;
         }
 
-        [HttpPost("setup")]
-        public Dictionary<string, Vote> setupVoter([FromBody]string name, string id)
+        [Route("setup")]
+        [HttpPost]
+        public Dictionary<string, Vote> setupVoter([FromBody] SetupVoterDto voter)
         {
             var voters = this._voterService.GetAllVoters();
-            voters[id].Name = name;
+            _voterService.UpdateVote(voter.Id, new Vote(voter.Name, ""));
             //_hubContext.Clients.AllExcept(id).PlayerAdded(name);
             return voters;
         }
 
+        [Route("cast-vote")]
         [HttpPost]
         public string Post([FromBody]Vote vote)
         {
