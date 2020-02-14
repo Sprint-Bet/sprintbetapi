@@ -1,11 +1,24 @@
 ﻿using PlanningPoker.Dtos;
+using System.Collections.Generic;
 using System.Threading.Tasks;
 
 namespace PlanningPoker.Interfaces
 {
     public interface IHubClient
     {
-        Task BroadcastVote(Vote vote);
-        //Task PlayerAdded(string name);
+        /// <summary>
+        ///     Event called someone has updated their vote
+        /// </summary>
+        /// <param name="connectionId"></param>
+        /// <param name="vote"></param>
+        /// <returns></returns>
+        Task VoteUpdated(string connectionId, Vote vote);
+
+        /// <summary>
+        ///     Event called when a new voter/player has joined the room
+        /// </summary>
+        /// <param name="voter"></param>
+        /// <returns></returns>
+        Task VoterAdded(Voter voter);
     }
 }

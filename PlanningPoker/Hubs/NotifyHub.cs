@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.SignalR;
 using PlanningPoker.Dtos;
@@ -37,10 +38,37 @@ namespace PlanningPoker.Hubs
         /// <returns></returns>
         public override Task OnDisconnectedAsync(Exception exception)
         {
-            var id = Context.ConnectionId;
-            _voterService.RemoveVoter(id);
-
+            _voterService.RemoveVoter(Context.ConnectionId);
             return base.OnDisconnectedAsync(exception);
+        }
+
+        /// <summary>
+        ///     Method called when user updates their vote
+        /// </summary>
+        /// <param name="vote"></param>
+        /// <returns></returns>
+        public async Task UpdateVote(Vote vote)
+        {
+            var connectionId = Context.ConnectionId;
+            _voterService.UpdateVote(connectionId, vote);
+
+            await Clients.Others.VoteUpdated(connectionId, vote);
+        }
+
+        /// <summary>
+        ///     Method called when user first joins, to receive all other players
+        /// </summary>
+        /// <param name="name"></param>
+        /// <returns></returns>
+        public async Task<Dictionary<string, Vote>> setupVoter(string name)
+        {
+            var connectionId = Context.ConnectionId;
+            _voterService.UpdateVote(connectionId, new Vote(name, ""));
+            await Clients.Others.VoterAdded(new Voter(name, connectionId));;
+
+            return _voterService.GetAllVoters()
+                .Where(voter => voter.Key != connectionId)
+                .ToDictionary(o => o.Key, o => o.Value);
         }
     }
 }
