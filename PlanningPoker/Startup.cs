@@ -57,6 +57,7 @@ namespace PlanningPoker
             app.UseCors("CorsPolicy");
 
             app.UseRouting();
+
             app.UseEndpoints(endpoints => endpoints.MapHub<NotifyHub>("/api/notify"));
 
             app.UseMvc();
