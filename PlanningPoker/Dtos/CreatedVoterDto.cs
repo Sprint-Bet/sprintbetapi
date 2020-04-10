@@ -1,9 +1,9 @@
 ﻿using System;
 namespace PlanningPoker.Dtos
 {
-    public class SetupVoterDto
+    public class CreatedVoterDto
     {
-        public SetupVoterDto() { }
+        public CreatedVoterDto() { }
 
         /// <summary>
         ///     Voter's sessionId
