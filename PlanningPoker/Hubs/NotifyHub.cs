@@ -28,7 +28,6 @@ namespace PlanningPoker.Hubs
         /// <returns></returns>
         public override Task OnConnectedAsync()
         {
-            _voterService.AddVoter(Context.ConnectionId);
             return base.OnConnectedAsync();
         }
 
@@ -38,7 +37,6 @@ namespace PlanningPoker.Hubs
         /// <returns></returns>
         public override Task OnDisconnectedAsync(Exception exception)
         {
-            _voterService.RemoveVoter(Context.ConnectionId);
             return base.OnDisconnectedAsync(exception);
         }
 
@@ -60,15 +58,15 @@ namespace PlanningPoker.Hubs
         /// </summary>
         /// <param name="name"></param>
         /// <returns></returns>
-        public async Task<Dictionary<string, Vote>> setupVoter(string name)
+        public async Task<IEnumerable<Voter>> setupPlayer(string name)
         {
-            var connectionId = Context.ConnectionId;
-            _voterService.UpdateVote(connectionId, new Vote(name, ""));
-            await Clients.Others.VoterAdded(new Voter(name, connectionId));;
+            var newVoter = _voterService.AddVoter(name);
 
-            return _voterService.GetAllVoters()
-                .Where(voter => voter.Key != connectionId)
-                .ToDictionary(o => o.Key, o => o.Value);
+            // TODO: Need to update with 'push change' or whatever 
+            //await Clients.Others.VoterAdded(new Voter(name, sessionId));
+            await Clients.Others.VoterAdded(newVoter);
+
+            return _voterService.GetAllVoters();    
         }
     }
 }

@@ -6,13 +6,8 @@ namespace PlanningPoker.Dtos
         public SetupVoterDto() { }
 
         /// <summary>
-        ///     Voter's name
+        ///     Voter's sessionId
         /// </summary>
-        public string Name { get; set; }
-
-        /// <summary>
-        ///     Voter's connetion id
-        /// </summary>
-        public string Id { get; set; }
+        public string sessionId { get; set; }
     }
 }

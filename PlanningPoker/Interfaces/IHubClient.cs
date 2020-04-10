@@ -7,7 +7,7 @@ namespace PlanningPoker.Interfaces
     public interface IHubClient
     {
         /// <summary>
-        ///     Event called someone has updated their vote
+        ///     Event called when someone has updated their vote
         /// </summary>
         /// <param name="connectionId"></param>
         /// <param name="vote"></param>
