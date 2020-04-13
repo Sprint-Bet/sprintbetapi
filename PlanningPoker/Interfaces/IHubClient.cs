@@ -12,7 +12,10 @@ namespace PlanningPoker.Interfaces
         /// <param name="connectionId"></param>
         /// <param name="vote"></param>
         /// <returns></returns>
-        Task VoteUpdated(string connectionId, Vote vote);
+
+        // TODO: REMOVE BELOW COMMENT
+        //Task VoteUpdated(string connectionId, Vote vote);
+        Task VotingUpdated(IEnumerable<Voter> voters);
 
         /// <summary>
         ///     Event called when a new voter/player has joined the room

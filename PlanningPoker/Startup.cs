@@ -60,7 +60,7 @@ namespace PlanningPoker
 
             app.UseRouting();
 
-            app.UseEndpoints(endpoints => endpoints.MapHub<NotifyHub>("/api/notify"));
+            app.UseEndpoints(endpoints => endpoints.MapHub<VoteHub>("/api/hub/vote"));
 
             app.UseMvc();
         }

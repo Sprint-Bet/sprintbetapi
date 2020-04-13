@@ -9,15 +9,15 @@ using PlanningPoker.Services;
 
 namespace PlanningPoker.Hubs
 {
-    public class NotifyHub: Hub<IHubClient>
+    public class VoteHub: Hub<IHubClient>
     {
         private VoterService _voterService;
 
         /// <summary>
-        ///     Constructor for the notify hub
+        ///     Constructor for the votehub
         /// </summary>
         /// <param name="voterService"></param>
-        public NotifyHub(VoterService voterService)
+        public VoteHub(VoterService voterService)
         {
             _voterService = voterService;
         }
@@ -45,19 +45,23 @@ namespace PlanningPoker.Hubs
         /// </summary>
         /// <param name="vote"></param>
         /// <returns></returns>
-        public async Task UpdateVote(Vote vote)
-        {
-            var connectionId = Context.ConnectionId;
-            _voterService.UpdateVote(connectionId, vote);
 
-            await Clients.Others.VoteUpdated(connectionId, vote);
-        }
+        // ATTEMPTING TO DO THIS VIA POST REQUEST NOW
+
+        //public async Task UpdateVote(Vote vote)
+        //{
+        //    var connectionId = Context.ConnectionId;
+        //    _voterService.UpdateVote(connectionId, vote);
+
+        //    await Clients.Others.VoteUpdated(connectionId, vote);
+        //}
 
         /// <summary>
         ///     Method called when user first joins, to receive all other players
         /// </summary>
         /// <param name="name"></param>
         /// <returns></returns>
+        /// 
         public async Task<IEnumerable<Voter>> setupPlayer(string name)
         {
             var newVoter = _voterService.AddVoter(name);

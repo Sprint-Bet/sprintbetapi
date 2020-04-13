@@ -13,10 +13,10 @@ namespace PlanningPoker.Controllers
     [ApiController]
     public class VoteController : ControllerBase
     {
-        private IHubContext<NotifyHub, IHubClient> _hubContext;
+        private IHubContext<VoteHub, IHubClient> _hubContext;
         private VoterService _voterService;
 
-        public VoteController(IHubContext<NotifyHub, IHubClient> hubContext, VoterService voterService)
+        public VoteController(IHubContext<VoteHub, IHubClient> hubContext, VoterService voterService)
         {
             _hubContext = hubContext;
             _voterService = voterService;
@@ -31,9 +31,51 @@ namespace PlanningPoker.Controllers
             }
 
             var newVoter = _voterService.AddVoter(newVoterDto.Name);
-            await _hubContext.Clients.All.VoterAdded(newVoter);
+            await _hubContext.Clients.All.VotingUpdated(_voterService.GetAllVoters());
 
             return Ok(newVoter.Id);
+        }
+
+        [HttpGet("voters")]
+        public IActionResult GetVoters()
+        {
+            return Ok(_voterService.GetAllVoters());
+        }
+
+        [HttpGet("voters/{id}")]
+        public IActionResult GetVoterById([FromRoute] string id)
+        {
+            if (string.IsNullOrWhiteSpace(id))
+            {
+                return BadRequest();
+            }
+
+            var voter = _voterService.GetVoterById(id);
+            if (voter == null)
+            {
+                return NotFound(voter);
+            }
+
+            return Ok(voter);
+        }
+
+        [HttpPut("voters/{id}/cast")]
+        public async Task<IActionResult> CastVote([FromRoute] string id, [FromBody] UpdatedVoteDto updatedVoteDto)
+        {
+            if (string.IsNullOrWhiteSpace(id))
+            {
+                return BadRequest();
+            }
+
+            var voter = _voterService.GetVoterById(id);
+            if (voter == null)
+            {
+                return NotFound(voter);
+            }
+
+            _voterService.UpdateVote(id, updatedVoteDto.Point);
+            await _hubContext.Clients.All.VotingUpdated(_voterService.GetAllVoters());
+            return Ok();
         }
     }
 }

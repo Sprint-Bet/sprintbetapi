@@ -61,10 +61,10 @@ namespace PlanningPoker.Services
         /// </summary>
         /// <param name="id"></param>
         /// <param name="vote"></param>
-        public void UpdateVote(string id, Vote vote)
+        public void UpdateVote(string id, string point)
         {
             var voterToUpdate = GetVoterById(id);
-            voterToUpdate.Point = vote.Point;
+            voterToUpdate.Point = point;
         }
     }
 }
