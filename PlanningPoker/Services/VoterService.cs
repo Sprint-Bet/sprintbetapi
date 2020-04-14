@@ -13,12 +13,12 @@ namespace PlanningPoker.Services
         private ICollection<Voter> _voters = new List<Voter>();
 
         /// <summary>
-        ///     Get all voters
+        ///     Get all voters (only participants)
         /// </summary>
         /// <returns></returns>
         public IEnumerable<Voter> GetAllVoters()
         {
-            return _voters;
+            return _voters.Where(voter => voter.Role == PlayerType.Participant);
         }
 
         /// <summary>
@@ -36,14 +36,13 @@ namespace PlanningPoker.Services
         /// </summary>
         /// <param name="name"></param>
         /// <returns></returns>
-        /// <remarks>Returns newly created voter</remarks>
-        public Voter AddVoter(string name)
+        /// <remarks>Returns newly created voter id</remarks>
+        public string AddVoter(string name)
         {
             var id = Guid.NewGuid().ToString();
-            var newVoter = new Voter(id, name);
-            _voters.Add(newVoter);
+            _voters.Add(new Voter(id, name));
 
-            return newVoter;
+            return id;
         }
 
         /// <summary>

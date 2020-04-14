@@ -62,15 +62,15 @@ namespace PlanningPoker.Hubs
         /// <param name="name"></param>
         /// <returns></returns>
         /// 
-        public async Task<IEnumerable<Voter>> setupPlayer(string name)
-        {
-            var newVoter = _voterService.AddVoter(name);
+        //public async Task<IEnumerable<Voter>> setupPlayer(string name)
+        //{
+        //    var newVoter = _voterService.AddVoter(name);
 
-            // TODO: Need to update with 'push change' or whatever 
-            //await Clients.Others.VoterAdded(new Voter(name, sessionId));
-            await Clients.Others.VoterAdded(newVoter);
+        //    // TODO: Need to update with 'push change' or whatever 
+        //    //await Clients.Others.VoterAdded(new Voter(name, sessionId));
+        //    await Clients.Others.VoterAdded(newVoter);
 
-            return _voterService.GetAllVoters();    
-        }
+        //    return _voterService.GetAllVoters();    
+        //}
     }
 }

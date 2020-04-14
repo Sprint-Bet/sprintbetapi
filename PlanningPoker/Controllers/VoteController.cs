@@ -30,10 +30,10 @@ namespace PlanningPoker.Controllers
                 return BadRequest();
             }
 
-            var newVoter = _voterService.AddVoter(newVoterDto.Name);
+            var newVoterId = _voterService.AddVoter(newVoterDto.Name);
             await _hubContext.Clients.All.VotingUpdated(_voterService.GetAllVoters());
 
-            return Ok(newVoter.Id);
+            return Ok(newVoterId);
         }
 
         [HttpGet("voters")]
