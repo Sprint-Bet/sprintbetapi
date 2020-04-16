@@ -75,7 +75,28 @@ namespace PlanningPoker.Controllers
 
             _voterService.UpdateVote(id, updatedVoteDto.Point);
             await _hubContext.Clients.All.VotingUpdated(_voterService.GetAllVoters());
+
             return Ok();
+        }
+
+        [HttpDelete("voters/{id}/leave")]
+        public async Task<IActionResult> RemoveVoter([FromRoute] string id)
+        {
+            if (string.IsNullOrWhiteSpace(id))
+            {
+                return BadRequest();
+            }
+
+            var voter = _voterService.GetVoterById(id);
+            if (voter == null)
+            {
+                return NotFound(voter);
+            }
+
+            _voterService.RemoveVoter(id);
+            await _hubContext.Clients.All.VotingUpdated(_voterService.GetAllVoters());
+
+            return NoContent();
         }
     }
 }
