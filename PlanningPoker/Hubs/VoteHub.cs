@@ -45,9 +45,6 @@ namespace PlanningPoker.Hubs
         /// </summary>
         /// <param name="vote"></param>
         /// <returns></returns>
-
-        // ATTEMPTING TO DO THIS VIA POST REQUEST NOW
-
         //public async Task UpdateVote(Vote vote)
         //{
         //    var connectionId = Context.ConnectionId;
@@ -61,7 +58,6 @@ namespace PlanningPoker.Hubs
         /// </summary>
         /// <param name="name"></param>
         /// <returns></returns>
-        /// 
         //public async Task<IEnumerable<Voter>> setupPlayer(string name)
         //{
         //    var newVoter = _voterService.AddVoter(name);

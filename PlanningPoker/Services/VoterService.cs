@@ -32,15 +32,21 @@ namespace PlanningPoker.Services
         }
 
         /// <summary>
-        ///     Add a voter by name
+        ///     Add a new voter
         /// </summary>
-        /// <param name="name"></param>
         /// <returns></returns>
         /// <remarks>Returns newly created voter id</remarks>
-        public string AddVoter(string name)
+        public string AddVoter(NewVoterDto newVoterDto)
         {
             var id = Guid.NewGuid().ToString();
-            _voters.Add(new Voter(id, name));
+            var newVoter = new Voter
+            {
+                Name = newVoterDto.Name,
+                Id = id,
+                Role = newVoterDto.Role
+            };
+
+            _voters.Add(newVoter);
 
             return id;
         }

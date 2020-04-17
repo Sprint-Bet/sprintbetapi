@@ -1,5 +1,4 @@
-﻿using System.Collections.Generic;
-using System.Threading.Tasks;
+﻿using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.SignalR;
 using PlanningPoker.Dtos;
@@ -30,7 +29,7 @@ namespace PlanningPoker.Controllers
                 return BadRequest();
             }
 
-            var newVoterId = _voterService.AddVoter(newVoterDto.Name);
+            var newVoterId = _voterService.AddVoter(newVoterDto);
             await _hubContext.Clients.All.VotingUpdated(_voterService.GetAllVoters());
 
             return Ok(newVoterId);
