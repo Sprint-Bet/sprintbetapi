@@ -71,5 +71,17 @@ namespace PlanningPoker.Services
             var voterToUpdate = GetVoterById(id);
             voterToUpdate.Point = point;
         }
+
+        /// <summary>
+        ///     Clear all current votes (for participants)
+        /// </summary>
+        public void ClearVotes()
+        {
+            var participants = _voters.Where(voter => voter.Role == PlayerType.Participant);
+            foreach (var participant in participants)
+            {
+                participant.Point = "";
+            }
+        }
     }
 }

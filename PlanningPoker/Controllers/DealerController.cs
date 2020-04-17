@@ -21,9 +21,18 @@ namespace PlanningPoker.Controllers
         }
 
         [HttpPost("lock")]
-        public async Task<IActionResult> Post()
+        public async Task<IActionResult> LockVoting()
         {
             await _hubContext.Clients.All.VotingLocked();
+            return NoContent();
+        }
+
+        [HttpPost("clear")]
+        public async Task<IActionResult> ClearVotes()
+        {
+            _voterService.ClearVotes();
+            await _hubContext.Clients.All.VotingUpdated(_voterService.GetAllVoters());
+            await _hubContext.Clients.All.VotingUnlocked();
             return NoContent();
         }
     }
