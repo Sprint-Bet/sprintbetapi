@@ -18,7 +18,7 @@ namespace PlanningPoker.Services
         /// <returns></returns>
         public IEnumerable<Voter> GetAllVoters()
         {
-            return _voters.Where(voter => voter.Role == PlayerType.Participant);
+            return _voters;
         }
 
         /// <summary>
@@ -35,20 +35,19 @@ namespace PlanningPoker.Services
         ///     Add a new voter
         /// </summary>
         /// <returns></returns>
-        /// <remarks>Returns newly created voter id</remarks>
-        public string AddVoter(NewVoterDto newVoterDto)
+        /// <remarks>Returns newly created voter</remarks>
+        public Voter AddVoter(NewVoterDto newVoterDto)
         {
-            var id = Guid.NewGuid().ToString();
             var newVoter = new Voter
             {
                 Name = newVoterDto.Name,
-                Id = id,
+                Id = Guid.NewGuid().ToString(),
                 Role = newVoterDto.Role
             };
 
             _voters.Add(newVoter);
 
-            return id;
+            return newVoter;
         }
 
         /// <summary>

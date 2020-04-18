@@ -1,4 +1,7 @@
-﻿using System.Threading.Tasks;
+﻿using System;
+using System.Threading.Tasks;
+using Microsoft.AspNetCore.Http;
+using Microsoft.AspNetCore.Http.Extensions;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.SignalR;
 using PlanningPoker.Dtos;
@@ -29,10 +32,13 @@ namespace PlanningPoker.Controllers
                 return BadRequest();
             }
 
-            var newVoterId = _voterService.AddVoter(newVoterDto);
+            var newVoter = _voterService.AddVoter(newVoterDto);
             await _hubContext.Clients.All.VotingUpdated(_voterService.GetAllVoters());
 
-            return Ok(newVoterId);
+            var locationPath = $"api/vote/voters/{newVoter.Id}";
+            var location = GetBaseUri(Request, locationPath);
+
+            return Created(location.ToString(), newVoter);
         }
 
         [HttpGet("voters")]
@@ -96,6 +102,24 @@ namespace PlanningPoker.Controllers
             await _hubContext.Clients.All.VotingUpdated(_voterService.GetAllVoters());
 
             return NoContent();
+        }
+
+        /// <summary>
+        ///     Helper uri builder method
+        /// </summary>
+        /// <param name="request"></param>
+        /// <returns></returns>
+        public static Uri GetBaseUri(HttpRequest request, string path)
+        {
+            var uriBuilder = new UriBuilder
+            {
+                Scheme = request.Scheme,
+                Host = request.Host.Host,
+                Port = request.Host.Port.GetValueOrDefault(-1),
+                Path = path
+            };
+
+            return uriBuilder.Uri;
         }
     }
 }
