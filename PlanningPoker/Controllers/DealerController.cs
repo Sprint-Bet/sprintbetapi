@@ -1,6 +1,9 @@
+using System;
 using System.Threading.Tasks;
+using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.SignalR;
+using PlanningPoker.Dtos;
 using PlanningPoker.Hubs;
 using PlanningPoker.Interfaces;
 using PlanningPoker.Services;
@@ -33,6 +36,13 @@ namespace PlanningPoker.Controllers
             _voterService.ClearVotes();
             await _hubContext.Clients.All.VotingUpdated(_voterService.GetAllVoters());
             await _hubContext.Clients.All.VotingUnlocked();
+            return NoContent();
+        }
+
+        [HttpPost("finish")]
+        public async Task<IActionResult> FinishGame()
+        {
+            await _hubContext.Clients.All.GameFinished();
             return NoContent();
         }
     }

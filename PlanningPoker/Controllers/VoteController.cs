@@ -32,6 +32,12 @@ namespace PlanningPoker.Controllers
                 return BadRequest();
             }
 
+            if (newVoterDto.Role == PlayerType.Dealer)
+            {
+                // CREATE NEW ROOM using Guid.NewGuid().ToString();
+            }
+
+            // ADD VOTER TO THE CORRECT ROOM
             var newVoter = _voterService.AddVoter(newVoterDto);
             await _hubContext.Clients.All.VotingUpdated(_voterService.GetAllVoters());
 

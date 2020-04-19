@@ -22,5 +22,10 @@ namespace PlanningPoker.Interfaces
         ///     Event called when a dealer has unlocked voting
         /// </summary>
         Task VotingUnlocked();
+
+        /// <summary>
+        ///     Event called when a dealer has finished a game
+        /// </summary>
+        Task GameFinished();
     }
 }
