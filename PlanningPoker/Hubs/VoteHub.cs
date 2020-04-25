@@ -9,15 +9,15 @@ using PlanningPoker.Services;
 
 namespace PlanningPoker.Hubs
 {
-    public class NotifyHub: Hub<IHubClient>
+    public class VoteHub: Hub<IHubClient>
     {
         private VoterService _voterService;
 
         /// <summary>
-        ///     Constructor for the notify hub
+        ///     Constructor for the votehub
         /// </summary>
         /// <param name="voterService"></param>
-        public NotifyHub(VoterService voterService)
+        public VoteHub(VoterService voterService)
         {
             _voterService = voterService;
         }
@@ -28,7 +28,6 @@ namespace PlanningPoker.Hubs
         /// <returns></returns>
         public override Task OnConnectedAsync()
         {
-            _voterService.AddVoter(Context.ConnectionId);
             return base.OnConnectedAsync();
         }
 
@@ -38,7 +37,6 @@ namespace PlanningPoker.Hubs
         /// <returns></returns>
         public override Task OnDisconnectedAsync(Exception exception)
         {
-            _voterService.RemoveVoter(Context.ConnectionId);
             return base.OnDisconnectedAsync(exception);
         }
 
@@ -47,28 +45,28 @@ namespace PlanningPoker.Hubs
         /// </summary>
         /// <param name="vote"></param>
         /// <returns></returns>
-        public async Task UpdateVote(Vote vote)
-        {
-            var connectionId = Context.ConnectionId;
-            _voterService.UpdateVote(connectionId, vote);
+        //public async Task UpdateVote(Vote vote)
+        //{
+        //    var connectionId = Context.ConnectionId;
+        //    _voterService.UpdateVote(connectionId, vote);
 
-            await Clients.Others.VoteUpdated(connectionId, vote);
-        }
+        //    await Clients.Others.VoteUpdated(connectionId, vote);
+        //}
 
         /// <summary>
         ///     Method called when user first joins, to receive all other players
         /// </summary>
         /// <param name="name"></param>
         /// <returns></returns>
-        public async Task<Dictionary<string, Vote>> setupVoter(string name)
-        {
-            var connectionId = Context.ConnectionId;
-            _voterService.UpdateVote(connectionId, new Vote(name, ""));
-            await Clients.Others.VoterAdded(new Voter(name, connectionId));;
+        //public async Task<IEnumerable<Voter>> setupPlayer(string name)
+        //{
+        //    var newVoter = _voterService.AddVoter(name);
 
-            return _voterService.GetAllVoters()
-                .Where(voter => voter.Key != connectionId)
-                .ToDictionary(o => o.Key, o => o.Value);
-        }
+        //    // TODO: Need to update with 'push change' or whatever 
+        //    //await Clients.Others.VoterAdded(new Voter(name, sessionId));
+        //    await Clients.Others.VoterAdded(newVoter);
+
+        //    return _voterService.GetAllVoters();    
+        //}
     }
 }

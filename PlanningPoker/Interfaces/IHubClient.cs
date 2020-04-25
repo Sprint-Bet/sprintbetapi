@@ -7,18 +7,25 @@ namespace PlanningPoker.Interfaces
     public interface IHubClient
     {
         /// <summary>
-        ///     Event called someone has updated their vote
-        /// </summary>
-        /// <param name="connectionId"></param>
-        /// <param name="vote"></param>
-        /// <returns></returns>
-        Task VoteUpdated(string connectionId, Vote vote);
-
-        /// <summary>
-        ///     Event called when a new voter/player has joined the room
+        ///     Event called when voter list or a vote has been updated
         /// </summary>
         /// <param name="voter"></param>
         /// <returns></returns>
-        Task VoterAdded(Voter voter);
+        Task VotingUpdated(IEnumerable<Voter> voters);
+
+        /// <summary>
+        ///     Event called when a dealer has locked voting
+        /// </summary>
+        Task VotingLocked();
+
+        /// <summary>
+        ///     Event called when a dealer has unlocked voting
+        /// </summary>
+        Task VotingUnlocked();
+
+        /// <summary>
+        ///     Event called when a dealer has finished a game
+        /// </summary>
+        Task GameFinished();
     }
 }

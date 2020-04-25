@@ -3,6 +3,7 @@ using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
+using Microsoft.Extensions.Hosting;
 using PlanningPoker.Hubs;
 using PlanningPoker.Services;
 
@@ -32,11 +33,16 @@ namespace PlanningPoker
 
             services.AddSingleton<VoterService>();
 
-            services.AddMvc().SetCompatibilityVersion(CompatibilityVersion.Version_2_2);
+            services.AddMvc(option =>
+            {
+                option.EnableEndpointRouting = false;
+            }).SetCompatibilityVersion(CompatibilityVersion.Version_3_0);
+
+            services.AddControllers().AddNewtonsoftJson();
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
-        public void Configure(IApplicationBuilder app, IHostingEnvironment env)
+        public void Configure(IApplicationBuilder app, IWebHostEnvironment env)
         {
             if (env.IsDevelopment())
             {
@@ -52,7 +58,9 @@ namespace PlanningPoker
 
             app.UseCors("CorsPolicy");
 
-            app.UseSignalR(routes => routes.MapHub<NotifyHub>("/api/notify"));
+            app.UseRouting();
+
+            app.UseEndpoints(endpoints => endpoints.MapHub<VoteHub>("/api/hub/vote"));
 
             app.UseMvc();
         }
