@@ -32,6 +32,7 @@ namespace PlanningPoker
             services.AddSignalR();
 
             services.AddSingleton<VoterService>();
+            services.AddSingleton<RoomService>();
 
             services.AddMvc(option =>
             {

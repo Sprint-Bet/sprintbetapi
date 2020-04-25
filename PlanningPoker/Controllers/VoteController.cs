@@ -17,11 +17,13 @@ namespace PlanningPoker.Controllers
     {
         private IHubContext<VoteHub, IHubClient> _hubContext;
         private VoterService _voterService;
+        private RoomService _roomService;
 
-        public VoteController(IHubContext<VoteHub, IHubClient> hubContext, VoterService voterService)
+        public VoteController(IHubContext<VoteHub, IHubClient> hubContext, VoterService voterService, RoomService roomService)
         {
             _hubContext = hubContext;
             _voterService = voterService;
+            _roomService = roomService;
         }
 
         [HttpPost("register")]
@@ -32,12 +34,7 @@ namespace PlanningPoker.Controllers
                 return BadRequest();
             }
 
-            if (newVoterDto.Role == PlayerType.Dealer)
-            {
-                // CREATE NEW ROOM using Guid.NewGuid().ToString();
-            }
-
-            // ADD VOTER TO THE CORRECT ROOM
+            // TODO: ADD VOTER TO THE CORRECT ROOM
             var newVoter = _voterService.AddVoter(newVoterDto);
             await _hubContext.Clients.All.VotingUpdated(_voterService.GetAllVoters());
 
