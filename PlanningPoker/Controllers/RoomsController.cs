@@ -32,6 +32,23 @@ namespace PlanningPoker.Controllers
             return Ok(_roomService.GetAllRooms());
         }
 
+        [HttpGet("{roomId}")]
+        public IActionResult GetRoomById([FromRoute] string roomId)
+        {
+            if (string.IsNullOrWhiteSpace(roomId))
+            {
+                return BadRequest();
+            }
+
+            var room = _roomService.GetRoomById(roomId);
+            if (room == null)
+            {
+                return NotFound();
+            }
+
+            return Ok(room);
+        }
+
         [HttpPost("create")]
         public async Task<IActionResult> CreateRoom([FromBody] NewRoomDto newRoomDto)
         {

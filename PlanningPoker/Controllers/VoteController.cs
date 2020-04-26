@@ -29,14 +29,21 @@ namespace PlanningPoker.Controllers
         [HttpPost("register")]
         public async Task<IActionResult> SetupPlayer([FromBody] NewVoterDto newVoterDto)
         {
-            if (string.IsNullOrWhiteSpace(newVoterDto.Name))
+            if (string.IsNullOrWhiteSpace(newVoterDto.Name) || string.IsNullOrWhiteSpace(newVoterDto.Group))
             {
                 return BadRequest();
             }
 
-            // TODO: ADD VOTER TO THE CORRECT ROOM
-            var newVoter = _voterService.AddVoter(newVoterDto);
-            await _hubContext.Clients.All.VotingUpdated(_voterService.GetAllVoters());
+            var room = _roomService.GetRoomById(newVoterDto.Group);
+            if (room == null)
+            {
+                return NotFound();
+            }
+
+            var newVoter = _voterService.AddVoter(newVoterDto, room);
+
+            await _hubContext.Groups.AddToGroupAsync(newVoterDto.ConnectionId, newVoter.Room.Id);
+            await _hubContext.Clients.Group(newVoter.Room.Id).VotingUpdated(_voterService.GetVotersByRoom(newVoter.Room.Id));
 
             var locationPath = $"api/vote/voters/{newVoter.Id}";
             var location = GetBaseUri(Request, locationPath);
@@ -45,9 +52,14 @@ namespace PlanningPoker.Controllers
         }
 
         [HttpGet("voters")]
-        public IActionResult GetVoters()
+        public IActionResult GetVoters([FromQuery] string roomId = "")
         {
-            return Ok(_voterService.GetAllVoters());
+            if (string.IsNullOrWhiteSpace(roomId))
+            {
+                return Ok(_voterService.GetAllVoters());
+            }
+
+            return Ok(_voterService.GetVotersByRoom(roomId));
         }
 
         [HttpGet("voters/{id}")]
@@ -82,7 +94,7 @@ namespace PlanningPoker.Controllers
             }
 
             _voterService.UpdateVote(id, updatedVoteDto.Point);
-            await _hubContext.Clients.All.VotingUpdated(_voterService.GetAllVoters());
+            await _hubContext.Clients.Group(voter.Room.Id).VotingUpdated(_voterService.GetVotersByRoom(voter.Room.Id));
 
             return Ok();
         }

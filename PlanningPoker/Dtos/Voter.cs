@@ -5,6 +5,9 @@ using System.Threading.Tasks;
 
 namespace PlanningPoker.Dtos
 {
+    /// <summary>
+    ///     The different roles a voter can have
+    /// </summary>
     public enum PlayerType
     {
         Participant,
@@ -12,29 +15,11 @@ namespace PlanningPoker.Dtos
         Dealer
     }
 
+    /// <summary>
+    ///     Voter class
+    /// </summary>
     public class Voter
     {
-        /// <summary>
-        ///     New Voter
-        /// </summary>
-        public Voter() { }
-
-        public Voter(string id)
-        {
-            Id = id;
-        }
-
-        /// <summary>
-        ///     New voter with initial values
-        /// </summary>
-        /// <param name="id"></param>
-        /// <param name="name"></param>
-        public Voter(string id, string name)
-        {
-            Id = id;
-            Name = name;
-        }
-
         /// <summary>
         ///     Voter's name
         /// </summary>
@@ -54,5 +39,10 @@ namespace PlanningPoker.Dtos
         ///     Voter's estimate/point
         /// </summary>
         public string Point { get; set; }
+
+        /// <summary>
+        ///     The room the voter belongs to
+        /// </summary>
+        public Room Room { get; set; }
     }
 }
