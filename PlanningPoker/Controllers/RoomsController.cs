@@ -65,23 +65,50 @@ namespace PlanningPoker.Controllers
             return Created(location.ToString(), newRoom);
         }
 
-        [HttpPost("lock")]
-        public async Task<IActionResult> LockVoting()
+        [HttpPut("{roomId}/lock")]
+        public async Task<IActionResult> LockVoting([FromRoute] string roomId)
         {
-            await _hubContext.Clients.All.VotingLocked();
-            return NoContent();
+            if (String.IsNullOrWhiteSpace(roomId))
+            {
+                return BadRequest();
+            }
+
+            var room = _roomService.GetRoomById(roomId);
+            if (room == null)
+            {
+                return NotFound();
+            }
+
+            room.VotingLocked = true;
+            await _hubContext.Clients.Group(room.Id).VotingLocked();
+
+            return Ok(room);
         }
 
-        [HttpPost("clear")]
-        public async Task<IActionResult> ClearVotes()
+        [HttpPut("{roomId}/clear")]
+        public async Task<IActionResult> ClearVotes([FromRoute] string roomId)
         {
-            _voterService.ClearVotes();
-            await _hubContext.Clients.All.VotingUpdated(_voterService.GetAllVoters());
-            await _hubContext.Clients.All.VotingUnlocked();
-            return NoContent();
+            if (String.IsNullOrWhiteSpace(roomId))
+            {
+                return BadRequest();
+            }
+
+            var room = _roomService.GetRoomById(roomId);
+            if (room == null)
+            {
+                return NotFound();  
+            }
+
+            room.VotingLocked = false;
+            _voterService.ClearVotesByRoom(room.Id);
+
+            await _hubContext.Clients.Group(room.Id).VotingUpdated(_voterService.GetVotersByRoom(room.Id));
+            await _hubContext.Clients.Group(room.Id).VotingUnlocked();
+
+            return Ok(room);
         }
 
-        [HttpPost("finish")]
+        [HttpDelete("{roomId}/finish")]
         public async Task<IActionResult> FinishGame()
         {
             await _hubContext.Clients.All.GameFinished();

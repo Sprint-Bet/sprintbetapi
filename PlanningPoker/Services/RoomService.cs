@@ -84,9 +84,9 @@ namespace PlanningPoker.Services
         /// <summary>
         ///     Clear all current votes (for participants)
         /// </summary>
-        public void ClearVotes()
+        public void ClearVotesByRoom(string roomId)
         {
-            var participants = _voters.Where(voter => voter.Role == PlayerType.Participant);
+            var participants = _voters.Where(voter => (voter.Role == PlayerType.Participant) && (voter.Room.Id == roomId));
             foreach (var participant in participants)
             {
                 participant.Point = "";

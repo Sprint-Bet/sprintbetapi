@@ -114,8 +114,9 @@ namespace PlanningPoker.Controllers
             }
 
             _voterService.RemoveVoter(id);
+
             await _hubContext.Groups.RemoveFromGroupAsync(connectionId, voter.Room.Id);
-            await _hubContext.Clients.All.VotingUpdated(_voterService.GetAllVoters());
+            await _hubContext.Clients.Group(voter.Room.Id).VotingUpdated(_voterService.GetVotersByRoom(voter.Room.Id));
 
             return NoContent();
         }

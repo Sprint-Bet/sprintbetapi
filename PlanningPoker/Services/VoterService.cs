@@ -41,7 +41,8 @@ namespace PlanningPoker.Services
             var newRoom = new Room
             {
                 Name = name,
-                Id = DateTimeOffset.Now.ToUnixTimeSeconds().ToString("X")
+                Id = DateTimeOffset.Now.ToUnixTimeSeconds().ToString("X"),
+                VotingLocked = false
             };
 
             _rooms.Add(newRoom);
