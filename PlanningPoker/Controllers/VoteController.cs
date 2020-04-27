@@ -100,9 +100,9 @@ namespace PlanningPoker.Controllers
         }
 
         [HttpDelete("voters/{id}/leave")]
-        public async Task<IActionResult> RemoveVoter([FromRoute] string id)
+        public async Task<IActionResult> RemoveVoter([FromRoute] string id, [FromHeader] string connectionId)
         {
-            if (string.IsNullOrWhiteSpace(id))
+            if (string.IsNullOrWhiteSpace(id) || string.IsNullOrWhiteSpace(connectionId))
             {
                 return BadRequest();
             }
@@ -114,6 +114,7 @@ namespace PlanningPoker.Controllers
             }
 
             _voterService.RemoveVoter(id);
+            await _hubContext.Groups.RemoveFromGroupAsync(connectionId, voter.Room.Id);
             await _hubContext.Clients.All.VotingUpdated(_voterService.GetAllVoters());
 
             return NoContent();
