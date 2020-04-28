@@ -5,59 +5,105 @@ using PlanningPoker.Dtos;
 
 namespace PlanningPoker.Services
 {
-    public class RoomService
+    public class VoterService
     {
         /// <summary>
-        ///     Collection of rooms
+        ///     Collection of players
         /// </summary>
-        private ICollection<Room> _rooms = new List<Room>();
+        private ICollection<Voter> _voters = new List<Voter>();
 
         /// <summary>
-        ///     Get all rooms
+        ///     Get all voters
         /// </summary>
         /// <returns></returns>
-        public IEnumerable<Room> GetAllRooms()
+        public IEnumerable<Voter> GetAllVoters()
         {
-            return _rooms;
+            return _voters;
         }
 
         /// <summary>
-        ///     Get single room
+        ///     Get all voters by room name
+        /// </summary>
+        /// <returns></returns>
+        public IEnumerable<Voter> GetVotersByRoom(string roomId)
+        {
+            return _voters.Where(voter => voter.Room.Id == roomId);
+        }
+
+        /// <summary>
+        ///     Get single voter
         /// </summary>
         /// <param name="id"></param>
         /// <returns></returns>
-        public Room GetRoomById(string id)
+        public Voter GetVoterById(string id)
         {
-            return _rooms.FirstOrDefault(room => room.Id == id);
+            return _voters.FirstOrDefault(voter => voter.Id == id);
         }
 
         /// <summary>
-        ///     Add a new room
+        ///     Add a new voter
         /// </summary>
         /// <returns></returns>
-        /// <remarks>Returns newly created room</remarks>
-        public Room AddRoom(string name)
+        /// <remarks>Returns newly created voter</remarks>
+        public Voter AddVoter(NewVoterDto newVoterDto, Room room)
         {
-            var newRoom = new Room
+            var newVoter = new Voter
             {
-                Name = name,
-                Id = DateTimeOffset.Now.ToUnixTimeSeconds().ToString("X"),
-                VotingLocked = false
+                Name = newVoterDto.Name,
+                Id = Guid.NewGuid().ToString(),
+                Role = newVoterDto.Role,
+                Room = room
             };
 
-            _rooms.Add(newRoom);
+            _voters.Add(newVoter);
 
-            return newRoom;
+            return newVoter;
         }
 
         /// <summary>
-        ///     Remove a room
+        ///     Remove a voter
         /// </summary>
         /// <param name="id"></param>
-        //public void RemoveVoter(string id)
-        //{
-        //    var voterToRemove = GetVoterById(id);
-        //    _rooms.Remove(voterToRemove);
-        //}
+        public void RemoveVoterById(string id)
+        {
+            var voterToRemove = GetVoterById(id);
+            _voters.Remove(voterToRemove);
+        }
+
+        /// <summary>
+        ///     Update a single vote
+        /// </summary>
+        /// <param name="id"></param>
+        /// <param name="vote"></param>
+        public void UpdateVote(string id, string point)
+        {
+            var voterToUpdate = GetVoterById(id);
+            voterToUpdate.Point = point;
+        }
+
+        /// <summary>
+        ///     Clear all current votes (for participants)
+        /// </summary>
+        public void ClearVotesByRoomId(string roomId)
+        {
+            var voters = _voters.Where(voter => (voter.Role == PlayerType.Participant) && (voter.Room.Id == roomId));
+            foreach (var voter in voters)
+            {
+                voter.Point = "";
+            }
+        }
+
+        /// <summary>
+        ///     Remove all voters for a room
+        /// </summary>
+        /// <param name="roomId"></param>
+        public void RemoveVotersByRoomId(string roomId)
+        {
+            var participants = _voters.Where(voter => voter.Room.Id == roomId).ToList<Voter>();
+            foreach (var participant in participants)
+            {
+                RemoveVoterById(participant.Id);
+            }
+        }
     }
 }

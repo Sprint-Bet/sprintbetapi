@@ -100,7 +100,7 @@ namespace PlanningPoker.Controllers
             }
 
             room.VotingLocked = false;
-            _voterService.ClearVotesByRoom(room.Id);
+            _voterService.ClearVotesByRoomId(room.Id);
 
             await _hubContext.Clients.Group(room.Id).VotingUpdated(_voterService.GetVotersByRoom(room.Id));
             await _hubContext.Clients.Group(room.Id).VotingUnlocked();
@@ -109,9 +109,22 @@ namespace PlanningPoker.Controllers
         }
 
         [HttpDelete("{roomId}/finish")]
-        public async Task<IActionResult> FinishGame()
+        public IActionResult FinishGame([FromRoute] string roomId)
         {
-            await _hubContext.Clients.All.GameFinished();
+            if (String.IsNullOrWhiteSpace(roomId))
+            {
+                return BadRequest();
+            }
+
+            var room = _roomService.GetRoomById(roomId);
+            if (room == null)
+            {
+                return NotFound();
+            }
+
+            _voterService.RemoveVotersByRoomId(room.Id);
+            _roomService.RemoveRoom(room);
+
             return NoContent();
         }
 

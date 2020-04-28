@@ -93,7 +93,7 @@ namespace PlanningPoker.Controllers
                 return NotFound(voter);
             }
 
-            _voterService.UpdateVote(id, updatedVoteDto.Point);
+                _voterService.UpdateVote(id, updatedVoteDto.Point);
             await _hubContext.Clients.Group(voter.Room.Id).VotingUpdated(_voterService.GetVotersByRoom(voter.Room.Id));
 
             return Ok();
@@ -113,7 +113,7 @@ namespace PlanningPoker.Controllers
                 return NotFound(voter);
             }
 
-            _voterService.RemoveVoter(id);
+            _voterService.RemoveVoterById(id);
 
             await _hubContext.Groups.RemoveFromGroupAsync(connectionId, voter.Room.Id);
             await _hubContext.Clients.Group(voter.Room.Id).VotingUpdated(_voterService.GetVotersByRoom(voter.Room.Id));
