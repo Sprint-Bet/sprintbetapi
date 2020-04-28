@@ -13,47 +13,56 @@ namespace PlanningPoker.Controllers
 {
     [Route("api/[controller]")]
     [ApiController]
-    public class VoteController : ControllerBase
+    public class VotersController : ControllerBase
     {
         private IHubContext<VoteHub, IHubClient> _hubContext;
         private VoterService _voterService;
+        private RoomService _roomService;
 
-        public VoteController(IHubContext<VoteHub, IHubClient> hubContext, VoterService voterService)
+        public VotersController(IHubContext<VoteHub, IHubClient> hubContext, VoterService voterService, RoomService roomService)
         {
             _hubContext = hubContext;
             _voterService = voterService;
+            _roomService = roomService;
         }
 
         [HttpPost("register")]
         public async Task<IActionResult> SetupPlayer([FromBody] NewVoterDto newVoterDto)
         {
-            if (string.IsNullOrWhiteSpace(newVoterDto.Name))
+            if (string.IsNullOrWhiteSpace(newVoterDto.Name) || string.IsNullOrWhiteSpace(newVoterDto.Group))
             {
                 return BadRequest();
             }
 
-            if (newVoterDto.Role == PlayerType.Dealer)
+            var room = _roomService.GetRoomById(newVoterDto.Group);
+            if (room == null)
             {
-                // CREATE NEW ROOM using Guid.NewGuid().ToString();
+                return NotFound();
             }
 
-            // ADD VOTER TO THE CORRECT ROOM
-            var newVoter = _voterService.AddVoter(newVoterDto);
-            await _hubContext.Clients.All.VotingUpdated(_voterService.GetAllVoters());
+            var newVoter = _voterService.AddVoter(newVoterDto, room);
 
-            var locationPath = $"api/vote/voters/{newVoter.Id}";
+            await _hubContext.Groups.AddToGroupAsync(newVoterDto.ConnectionId, newVoter.Room.Id);
+            await _hubContext.Clients.Group(newVoter.Room.Id).VotingUpdated(_voterService.GetVotersByRoom(newVoter.Room.Id));
+
+            var locationPath = $"api/voters/{newVoter.Id}";
             var location = GetBaseUri(Request, locationPath);
 
             return Created(location.ToString(), newVoter);
         }
 
-        [HttpGet("voters")]
-        public IActionResult GetVoters()
+        [HttpGet]
+        public IActionResult GetVoters([FromQuery] string roomId = "")
         {
-            return Ok(_voterService.GetAllVoters());
+            if (string.IsNullOrWhiteSpace(roomId))
+            {
+                return Ok(_voterService.GetAllVoters());
+            }
+
+            return Ok(_voterService.GetVotersByRoom(roomId));
         }
 
-        [HttpGet("voters/{id}")]
+        [HttpGet("{id}")]
         public IActionResult GetVoterById([FromRoute] string id)
         {
             if (string.IsNullOrWhiteSpace(id))
@@ -70,7 +79,7 @@ namespace PlanningPoker.Controllers
             return Ok(voter);
         }
 
-        [HttpPut("voters/{id}/cast")]
+        [HttpPut("{id}/cast")]
         public async Task<IActionResult> CastVote([FromRoute] string id, [FromBody] UpdatedVoteDto updatedVoteDto)
         {
             if (string.IsNullOrWhiteSpace(id))
@@ -84,16 +93,16 @@ namespace PlanningPoker.Controllers
                 return NotFound(voter);
             }
 
-            _voterService.UpdateVote(id, updatedVoteDto.Point);
-            await _hubContext.Clients.All.VotingUpdated(_voterService.GetAllVoters());
+                _voterService.UpdateVote(id, updatedVoteDto.Point);
+            await _hubContext.Clients.Group(voter.Room.Id).VotingUpdated(_voterService.GetVotersByRoom(voter.Room.Id));
 
             return Ok();
         }
 
-        [HttpDelete("voters/{id}/leave")]
-        public async Task<IActionResult> RemoveVoter([FromRoute] string id)
+        [HttpDelete("{id}/leave")]
+        public async Task<IActionResult> RemoveVoter([FromRoute] string id, [FromHeader] string connectionId)
         {
-            if (string.IsNullOrWhiteSpace(id))
+            if (string.IsNullOrWhiteSpace(id) || string.IsNullOrWhiteSpace(connectionId))
             {
                 return BadRequest();
             }
@@ -104,8 +113,10 @@ namespace PlanningPoker.Controllers
                 return NotFound(voter);
             }
 
-            _voterService.RemoveVoter(id);
-            await _hubContext.Clients.All.VotingUpdated(_voterService.GetAllVoters());
+            _voterService.RemoveVoterById(id);
+
+            await _hubContext.Groups.RemoveFromGroupAsync(connectionId, voter.Room.Id);
+            await _hubContext.Clients.Group(voter.Room.Id).VotingUpdated(_voterService.GetVotersByRoom(voter.Room.Id));
 
             return NoContent();
         }
