@@ -13,13 +13,13 @@ namespace PlanningPoker.Controllers
 {
     [Route("api/[controller]")]
     [ApiController]
-    public class VoteController : ControllerBase
+    public class VotersController : ControllerBase
     {
         private IHubContext<VoteHub, IHubClient> _hubContext;
         private VoterService _voterService;
         private RoomService _roomService;
 
-        public VoteController(IHubContext<VoteHub, IHubClient> hubContext, VoterService voterService, RoomService roomService)
+        public VotersController(IHubContext<VoteHub, IHubClient> hubContext, VoterService voterService, RoomService roomService)
         {
             _hubContext = hubContext;
             _voterService = voterService;
@@ -45,13 +45,13 @@ namespace PlanningPoker.Controllers
             await _hubContext.Groups.AddToGroupAsync(newVoterDto.ConnectionId, newVoter.Room.Id);
             await _hubContext.Clients.Group(newVoter.Room.Id).VotingUpdated(_voterService.GetVotersByRoom(newVoter.Room.Id));
 
-            var locationPath = $"api/vote/voters/{newVoter.Id}";
+            var locationPath = $"api/voters/{newVoter.Id}";
             var location = GetBaseUri(Request, locationPath);
 
             return Created(location.ToString(), newVoter);
         }
 
-        [HttpGet("voters")]
+        [HttpGet]
         public IActionResult GetVoters([FromQuery] string roomId = "")
         {
             if (string.IsNullOrWhiteSpace(roomId))
@@ -62,7 +62,7 @@ namespace PlanningPoker.Controllers
             return Ok(_voterService.GetVotersByRoom(roomId));
         }
 
-        [HttpGet("voters/{id}")]
+        [HttpGet("{id}")]
         public IActionResult GetVoterById([FromRoute] string id)
         {
             if (string.IsNullOrWhiteSpace(id))
@@ -79,7 +79,7 @@ namespace PlanningPoker.Controllers
             return Ok(voter);
         }
 
-        [HttpPut("voters/{id}/cast")]
+        [HttpPut("{id}/cast")]
         public async Task<IActionResult> CastVote([FromRoute] string id, [FromBody] UpdatedVoteDto updatedVoteDto)
         {
             if (string.IsNullOrWhiteSpace(id))
@@ -99,7 +99,7 @@ namespace PlanningPoker.Controllers
             return Ok();
         }
 
-        [HttpDelete("voters/{id}/leave")]
+        [HttpDelete("{id}/leave")]
         public async Task<IActionResult> RemoveVoter([FromRoute] string id, [FromHeader] string connectionId)
         {
             if (string.IsNullOrWhiteSpace(id) || string.IsNullOrWhiteSpace(connectionId))
