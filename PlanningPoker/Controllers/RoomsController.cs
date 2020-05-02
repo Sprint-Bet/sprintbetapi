@@ -11,7 +11,7 @@ using PlanningPoker.Services;
 
 namespace PlanningPoker.Controllers
 {
-    [Route("api/[controller]")]
+    [Route("[controller]")]
     [ApiController]
     public class RoomsController : ControllerBase
     {
@@ -60,7 +60,7 @@ namespace PlanningPoker.Controllers
             var newRoom = _roomService.AddRoom(newRoomDto.Name);
             await _hubContext.Groups.AddToGroupAsync(newRoomDto.ConnectionId, newRoom.Id);
 
-            var location = GetBaseUri(Request, $"api/rooms/{newRoom.Id}");
+            var location = GetBaseUri(Request, $"rooms/{newRoom.Id}");
 
             return Created(location.ToString(), newRoom);
         }

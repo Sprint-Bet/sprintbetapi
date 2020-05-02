@@ -11,7 +11,7 @@ using PlanningPoker.Services;
 
 namespace PlanningPoker.Controllers
 {
-    [Route("api/[controller]")]
+    [Route("[controller]")]
     [ApiController]
     public class VotersController : ControllerBase
     {
@@ -45,7 +45,7 @@ namespace PlanningPoker.Controllers
             await _hubContext.Groups.AddToGroupAsync(newVoterDto.ConnectionId, newVoter.Room.Id);
             await _hubContext.Clients.Group(newVoter.Room.Id).VotingUpdated(_voterService.GetVotersByRoom(newVoter.Room.Id));
 
-            var locationPath = $"api/voters/{newVoter.Id}";
+            var locationPath = $"voters/{newVoter.Id}";
             var location = GetBaseUri(Request, locationPath);
 
             return Created(location.ToString(), newVoter);

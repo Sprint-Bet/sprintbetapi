@@ -27,10 +27,9 @@ namespace PlanningPoker
                 {
                     builder.AllowAnyMethod()
                         .AllowAnyHeader()
-                        .AllowCredentials()
-                        .WithOrigins("https://sprintbet.herokuapp.com", "http://localhost:8888");
-                }
-                );
+                        .WithOrigins("https://sprintbet.herokuapp.com", "https://localhost:8888", "http://localhost:8888")
+                        .AllowCredentials();
+                });
             });
 
             services.AddSignalR();
@@ -51,7 +50,7 @@ namespace PlanningPoker
         {
             app.UseCors("CorsPolicy");
             app.UseRouting();
-            app.UseEndpoints(endpoints => endpoints.MapHub<VoteHub>("/api/hub/vote"));
+            app.UseEndpoints(endpoints => endpoints.MapHub<VoteHub>("/voteHub"));
 
             if (env.IsDevelopment())
             {
