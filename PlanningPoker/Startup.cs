@@ -26,7 +26,7 @@ namespace PlanningPoker
                 builder.AllowAnyMethod()
                     .AllowAnyHeader()
                     .AllowCredentials()
-                    .WithOrigins("http://localhost:4200", "http://localhost:8888");
+                    .WithOrigins("https://sprintbet.herokuapp.com", "http://localhost:8888");
             }));
 
             services.AddSignalR();
