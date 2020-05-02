@@ -21,13 +21,17 @@ namespace PlanningPoker
         // This method gets called by the runtime. Use this method to add services to the container.
         public void ConfigureServices(IServiceCollection services)
         {
-            services.AddCors(options => options.AddPolicy("CorsPolicy", builder =>
+            services.AddCors(options =>
             {
-                builder.AllowAnyMethod()
-                    .AllowAnyHeader()
-                    .AllowCredentials()
-                    .WithOrigins("https://sprintbet.herokuapp.com", "http://localhost:8888");
-            }));
+                options.AddPolicy("CorsPolicy", builder =>
+                {
+                    builder.AllowAnyMethod()
+                        .AllowAnyHeader()
+                        .AllowCredentials()
+                        .WithOrigins("https://sprintbet.herokuapp.com", "http://localhost:8888");
+                }
+                );
+            });
 
             services.AddSignalR();
 
@@ -45,6 +49,10 @@ namespace PlanningPoker
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
         public void Configure(IApplicationBuilder app, IWebHostEnvironment env)
         {
+            app.UseCors("CorsPolicy");
+            app.UseRouting();
+            app.UseEndpoints(endpoints => endpoints.MapHub<VoteHub>("/api/hub/vote"));
+
             if (env.IsDevelopment())
             {
                 app.UseDeveloperExceptionPage();
@@ -56,12 +64,6 @@ namespace PlanningPoker
             }
 
             app.UseHttpsRedirection();
-
-            app.UseCors("CorsPolicy");
-
-            app.UseRouting();
-
-            app.UseEndpoints(endpoints => endpoints.MapHub<VoteHub>("/api/hub/vote"));
 
             app.UseMvc();
         }
