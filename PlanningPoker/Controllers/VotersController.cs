@@ -93,10 +93,35 @@ namespace PlanningPoker.Controllers
                 return NotFound(voter);
             }
 
-                _voterService.UpdateVote(id, updatedVoteDto.Point);
+            voter.Point = updatedVoteDto.Point;
+            _voterService.UpdateVoter(voter);
+
             await _hubContext.Clients.Group(voter.Room.Id).VotingUpdated(_voterService.GetVotersByRoom(voter.Room.Id));
 
             return Ok();
+        }
+
+        [HttpPut("{id}/change-role")]
+        public async Task<IActionResult> ChangeRole([FromRoute] string id, [FromBody] UpdatedRoleDto updatedRoleDto)
+        {
+            if (string.IsNullOrWhiteSpace(id))
+            {
+                return BadRequest();
+            }
+
+            var voter = _voterService.GetVoterById(id);
+            if (voter == null)
+            {
+                return NotFound(voter);
+            }
+
+            voter.Role = updatedRoleDto.Role;
+            _voterService.UpdateVoter(voter);
+
+            await _hubContext.Clients.Group(voter.Room.Id).VotingUpdated(_voterService.GetVotersByRoom(voter.Room.Id));
+
+            return NoContent();
+
         }
 
         [HttpDelete("{id}/leave")]

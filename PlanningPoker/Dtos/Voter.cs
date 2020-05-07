@@ -1,20 +1,7 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
+﻿using PlanningPoker.Dtos.Enums;
 
 namespace PlanningPoker.Dtos
 {
-    /// <summary>
-    ///     The different roles a voter can have
-    /// </summary>
-    public enum PlayerType
-    {
-        Participant,
-        Spectator,
-        Dealer
-    }
-
     /// <summary>
     ///     Voter class
     /// </summary>

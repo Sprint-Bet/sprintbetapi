@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using PlanningPoker.Dtos;
+using PlanningPoker.Dtos.Enums;
 
 namespace PlanningPoker.Services
 {
@@ -10,7 +11,7 @@ namespace PlanningPoker.Services
         /// <summary>
         ///     Collection of players
         /// </summary>
-        private ICollection<Voter> _voters = new List<Voter>();
+        private List<Voter> _voters = new List<Voter>();
 
         /// <summary>
         ///     Get all voters
@@ -71,14 +72,13 @@ namespace PlanningPoker.Services
         }
 
         /// <summary>
-        ///     Update a single vote
+        ///     Update a single voter
         /// </summary>
-        /// <param name="id"></param>
-        /// <param name="vote"></param>
-        public void UpdateVote(string id, string point)
+        /// <param name="updatedVoter"></param>
+        public void UpdateVoter(Voter updatedVoter)
         {
-            var voterToUpdate = GetVoterById(id);
-            voterToUpdate.Point = point;
+            var voterIndex = _voters.FindIndex(voter => voter.Id == updatedVoter.Id);
+            _voters[voterIndex] = updatedVoter;
         }
 
         /// <summary>

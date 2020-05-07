@@ -1,4 +1,6 @@
 ﻿using System;
+using PlanningPoker.Dtos.Enums;
+
 namespace PlanningPoker.Dtos
 {
     public class NewVoterDto

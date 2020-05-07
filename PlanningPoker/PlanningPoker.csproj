@@ -13,5 +13,6 @@
 
   <ItemGroup>
     <Folder Include="Services\" />
+    <Folder Include="Dtos\Enums\" />
   </ItemGroup>
 </Project>
