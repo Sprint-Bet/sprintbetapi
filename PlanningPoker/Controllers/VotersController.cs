@@ -120,7 +120,7 @@ namespace PlanningPoker.Controllers
 
             await _hubContext.Clients.Group(voter.Room.Id).VotingUpdated(_voterService.GetVotersByRoom(voter.Room.Id));
 
-            return NoContent();
+            return Ok(voter);
 
         }
 
