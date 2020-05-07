@@ -50,15 +50,16 @@ namespace PlanningPoker.Controllers
         }
 
         [HttpPost("create")]
-        public async Task<IActionResult> CreateRoom([FromBody] NewRoomDto newRoomDto)
+        public async Task<IActionResult> CreateRoom([FromHeader] string connectionId)
         {
-            if (String.IsNullOrWhiteSpace(newRoomDto.Name))
+            if (String.IsNullOrWhiteSpace(connectionId))
             {
                 return BadRequest();
             }
 
-            var newRoom = _roomService.AddRoom(newRoomDto.Name);
-            await _hubContext.Groups.AddToGroupAsync(newRoomDto.ConnectionId, newRoom.Id);
+            var newRoom = _roomService.AddRoom();
+
+            await _hubContext.Groups.AddToGroupAsync(connectionId, newRoom.Id);
 
             var location = GetBaseUri(Request, $"rooms/{newRoom.Id}");
 

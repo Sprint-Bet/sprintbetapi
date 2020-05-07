@@ -36,11 +36,10 @@ namespace PlanningPoker.Services
         /// </summary>
         /// <returns></returns>
         /// <remarks>Returns newly created room</remarks>
-        public Room AddRoom(string name)
+        public Room AddRoom()
         {
             var newRoom = new Room
             {
-                Name = name,
                 Id = DateTimeOffset.Now.ToUnixTimeSeconds().ToString("X"),
                 VotingLocked = false
             };
