@@ -26,7 +26,7 @@ namespace PlanningPoker.Services
         ///     Get all voters by room name
         /// </summary>
         /// <returns></returns>
-        public IEnumerable<Voter> GetVotersByRoom(string roomId)
+        public IEnumerable<Voter> GetVotersByRoomId(string roomId)
         {
             return _voters.Where(voter => voter.Room.Id == roomId);
         }
@@ -57,6 +57,11 @@ namespace PlanningPoker.Services
             };
 
             _voters.Add(newVoter);
+
+            if (GetVotersByRoomId(room.Id).Count() == 1)
+            {
+                room.DealerId = newVoter.Id;
+            }
 
             return newVoter;
         }

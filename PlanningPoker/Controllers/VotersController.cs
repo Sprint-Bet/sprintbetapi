@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Linq;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Http.Extensions;
@@ -43,7 +44,7 @@ namespace PlanningPoker.Controllers
             var newVoter = _voterService.AddVoter(newVoterDto, room);
 
             await _hubContext.Groups.AddToGroupAsync(newVoterDto.ConnectionId, newVoter.Room.Id);
-            await _hubContext.Clients.Group(newVoter.Room.Id).VotingUpdated(_voterService.GetVotersByRoom(newVoter.Room.Id));
+            await _hubContext.Clients.Group(newVoter.Room.Id).VotingUpdated(_voterService.GetVotersByRoomId(newVoter.Room.Id));
 
             var locationPath = $"voters/{newVoter.Id}";
             var location = GetBaseUri(Request, locationPath);
@@ -59,7 +60,7 @@ namespace PlanningPoker.Controllers
                 return Ok(_voterService.GetAllVoters());
             }
 
-            return Ok(_voterService.GetVotersByRoom(roomId));
+            return Ok(_voterService.GetVotersByRoomId(roomId));
         }
 
         [HttpGet("{id}")]
@@ -96,7 +97,7 @@ namespace PlanningPoker.Controllers
             voter.Point = updatedVoteDto.Point;
             _voterService.UpdateVoter(voter);
 
-            await _hubContext.Clients.Group(voter.Room.Id).VotingUpdated(_voterService.GetVotersByRoom(voter.Room.Id));
+            await _hubContext.Clients.Group(voter.Room.Id).VotingUpdated(_voterService.GetVotersByRoomId(voter.Room.Id));
 
             return Ok();
         }
@@ -118,7 +119,7 @@ namespace PlanningPoker.Controllers
             voter.Role = updatedRoleDto.Role;
             _voterService.UpdateVoter(voter);
 
-            await _hubContext.Clients.Group(voter.Room.Id).VotingUpdated(_voterService.GetVotersByRoom(voter.Room.Id));
+            await _hubContext.Clients.Group(voter.Room.Id).VotingUpdated(_voterService.GetVotersByRoomId(voter.Room.Id));
 
             return Ok(voter);
 
@@ -141,7 +142,7 @@ namespace PlanningPoker.Controllers
             _voterService.RemoveVoterById(id);
 
             await _hubContext.Groups.RemoveFromGroupAsync(connectionId, voter.Room.Id);
-            await _hubContext.Clients.Group(voter.Room.Id).VotingUpdated(_voterService.GetVotersByRoom(voter.Room.Id));
+            await _hubContext.Clients.Group(voter.Room.Id).VotingUpdated(_voterService.GetVotersByRoomId(voter.Room.Id));
 
             return NoContent();
         }

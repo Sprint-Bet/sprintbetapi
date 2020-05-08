@@ -103,7 +103,7 @@ namespace PlanningPoker.Controllers
             room.VotingLocked = false;
             _voterService.ClearVotesByRoomId(room.Id);
 
-            await _hubContext.Clients.Group(room.Id).VotingUpdated(_voterService.GetVotersByRoom(room.Id));
+            await _hubContext.Clients.Group(room.Id).VotingUpdated(_voterService.GetVotersByRoomId(room.Id));
             await _hubContext.Clients.Group(room.Id).VotingUnlocked();
 
             return Ok(room);
