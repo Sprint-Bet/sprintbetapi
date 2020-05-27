@@ -1,4 +1,6 @@
-﻿namespace PlanningPoker.Dtos
+﻿using System.Collections.Generic;
+
+namespace PlanningPoker.Dtos
 {
     public class Room
     {
@@ -16,5 +18,10 @@
         ///     The room's current voting locked status
         /// </summary>
         public bool VotingLocked { get; set; }
+
+        /// <summary>
+        ///     The voting items used by the room
+        /// </summary>
+        public IEnumerable<string> Items { get; set; }
     }
 }
