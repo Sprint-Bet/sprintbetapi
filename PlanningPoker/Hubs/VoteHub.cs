@@ -34,7 +34,7 @@ namespace PlanningPoker.Hubs
         /// </summary>
         public async Task FinishGame(string roomId)
         {
-            await Clients.Group(roomId).GameFinished();
+            await Clients.OthersInGroup(roomId).GameFinished();
         }
     }
 }

@@ -1,8 +1,6 @@
 ﻿using System;
-using System.Linq;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Http;
-using Microsoft.AspNetCore.Http.Extensions;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.SignalR;
 using PlanningPoker.Dtos;
@@ -53,7 +51,7 @@ namespace PlanningPoker.Controllers
         }
 
         [HttpGet]
-        public IActionResult GetVoters([FromQuery] string roomId = "")
+        public IActionResult GetVoters([FromQuery] string roomId = "") 
         {
             if (string.IsNullOrWhiteSpace(roomId))
             {
@@ -76,6 +74,25 @@ namespace PlanningPoker.Controllers
             {
                 return NotFound(voter);
             }
+
+            return Ok(voter);
+        }
+
+        [HttpGet("{id}/reconnect")]
+        public async Task<IActionResult> GetVoterById([FromRoute] string id, [FromHeader] string connectionId)
+        {
+            if (string.IsNullOrWhiteSpace(id) || string.IsNullOrWhiteSpace(connectionId))
+            {
+                return BadRequest();
+            }
+
+            var voter = _voterService.GetVoterById(id);
+            if (voter == null)
+            {
+                return NotFound(voter);
+            }
+
+            await _hubContext.Groups.AddToGroupAsync(connectionId, voter.Room.Id);
 
             return Ok(voter);
         }
