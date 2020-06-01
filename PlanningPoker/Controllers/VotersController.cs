@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Linq;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
@@ -109,6 +110,11 @@ namespace PlanningPoker.Controllers
             if (voter == null)
             {
                 return NotFound(voter);
+            }
+
+            if (updatedVoteDto.Point != "" && !voter.Room.Items.Contains(updatedVoteDto.Point))
+            {
+                return BadRequest();
             }
 
             voter.Point = updatedVoteDto.Point;

@@ -34,14 +34,21 @@ namespace PlanningPoker.Services
         /// <summary>
         ///     Add a new room
         /// </summary>
+        /// <param name="roomType"></param>
         /// <returns></returns>
         /// <remarks>Returns newly created room</remarks>
-        public Room AddRoom()
+        public Room AddRoom(string roomType)
         {
+            string[] fibonacciItems = { "1", "2", "3", "5", "8", "13", "20", "?" };
+            string[] tshirtItems = {"XXS", "XS", "S", "M", "L", "XL", "XXL", "?"};
+
+            var items = (roomType == "fibonacci") ? fibonacciItems : tshirtItems;
+
             var newRoom = new Room
             {
                 Id = DateTimeOffset.Now.ToUnixTimeSeconds().ToString("X"),
-                VotingLocked = false
+                VotingLocked = false,
+                Items = items
             };
 
             _rooms.Add(newRoom);

@@ -50,14 +50,20 @@ namespace PlanningPoker.Controllers
         }
 
         [HttpPost("create")]
-        public async Task<IActionResult> CreateRoom([FromHeader] string connectionId)
+        public async Task<IActionResult> CreateRoom([FromBody] NewRoomDto newRoomDto, [FromHeader] string connectionId)
         {
             if (String.IsNullOrWhiteSpace(connectionId))
             {
                 return BadRequest();
             }
 
-            var newRoom = _roomService.AddRoom();
+            var itemsType = newRoomDto?.ItemsType;
+            if (String.IsNullOrWhiteSpace(itemsType))
+            {
+                return BadRequest();
+            }
+
+            var newRoom = _roomService.AddRoom(itemsType);
 
             await _hubContext.Groups.AddToGroupAsync(connectionId, newRoom.Id);
 
