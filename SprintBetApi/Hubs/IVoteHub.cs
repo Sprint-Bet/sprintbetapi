@@ -1,15 +1,15 @@
-﻿using PlanningPoker.Dtos;
+﻿using SprintBet.Dtos;
 using System.Collections.Generic;
 using System.Threading.Tasks;
 
-namespace PlanningPoker.Interfaces
+namespace SprintBet.Hubs
 {
-    public interface IHubClient
+    public interface IVoteHub
     {
         /// <summary>
         ///     Event called when voter list or a vote has been updated
         /// </summary>
-        /// <param name="voter"></param>
+        /// <param name="voters"></param>
         /// <returns></returns>
         Task VotingUpdated(IEnumerable<Voter> voters);
 

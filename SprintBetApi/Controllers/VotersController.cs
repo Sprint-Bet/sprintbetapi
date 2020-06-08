@@ -1,25 +1,23 @@
 ﻿using System;
 using System.Linq;
 using System.Threading.Tasks;
-using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.SignalR;
-using PlanningPoker.Dtos;
-using PlanningPoker.Hubs;
-using PlanningPoker.Interfaces;
-using PlanningPoker.Services;
+using SprintBet.Dtos;
+using SprintBet.Hubs;
+using SprintBet.Services;
 
-namespace PlanningPoker.Controllers
+namespace SprintBet.Controllers
 {
     [Route("[controller]")]
     [ApiController]
-    public class VotersController : ControllerBase
+    public class VotersController : SprintBetController
     {
-        private IHubContext<VoteHub, IHubClient> _hubContext;
-        private VoterService _voterService;
-        private RoomService _roomService;
+        private IHubContext<VoteHub, IVoteHub> _hubContext;
+        private IVoterService _voterService;
+        private IRoomService _roomService;
 
-        public VotersController(IHubContext<VoteHub, IHubClient> hubContext, VoterService voterService, RoomService roomService)
+        public VotersController(IHubContext<VoteHub, IVoteHub> hubContext, IVoterService voterService, IRoomService roomService)
         {
             _hubContext = hubContext;
             _voterService = voterService;
@@ -168,24 +166,6 @@ namespace PlanningPoker.Controllers
             await _hubContext.Clients.Group(voter.Room.Id).VotingUpdated(_voterService.GetVotersByRoomId(voter.Room.Id));
 
             return NoContent();
-        }
-
-        /// <summary>
-        ///     Helper uri builder method
-        /// </summary>
-        /// <param name="request"></param>
-        /// <returns></returns>
-        public static Uri GetBaseUri(HttpRequest request, string path)
-        {
-            var uriBuilder = new UriBuilder
-            {
-                Scheme = request.Scheme,
-                Host = request.Host.Host,
-                Port = request.Host.Port.GetValueOrDefault(-1),
-                Path = path
-            };
-
-            return uriBuilder.Uri;
         }
     }
 }

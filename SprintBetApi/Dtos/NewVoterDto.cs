@@ -1,7 +1,6 @@
-﻿using System;
-using PlanningPoker.Dtos.Enums;
+﻿using SprintBet.Enums;
 
-namespace PlanningPoker.Dtos
+namespace SprintBet.Dtos
 {
     public class NewVoterDto
     {

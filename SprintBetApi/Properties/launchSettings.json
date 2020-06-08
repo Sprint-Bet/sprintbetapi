@@ -17,7 +17,7 @@
         "ASPNETCORE_ENVIRONMENT": "Development"
       }
     },
-    "PlanningPoker": {
+    "SprintBet": {
       "commandName": "Project",
       "launchBrowser": true,
       "launchUrl": "rooms",

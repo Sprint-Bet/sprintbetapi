@@ -4,10 +4,10 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
-using PlanningPoker.Hubs;
-using PlanningPoker.Services;
+using SprintBet.Hubs;
+using SprintBet.Services;
 
-namespace PlanningPoker
+namespace SprintBet
 {
     public class Startup
     {
@@ -34,8 +34,8 @@ namespace PlanningPoker
 
             services.AddSignalR();
 
-            services.AddSingleton<VoterService>();
-            services.AddSingleton<RoomService>();
+            services.AddSingleton<IVoterService, VoterService>();
+            services.AddSingleton<IRoomService, RoomService>();
 
             services.AddMvc(option =>
             {

@@ -1,51 +1,37 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
-using PlanningPoker.Dtos;
-using PlanningPoker.Dtos.Enums;
+using SprintBet.Dtos;
+using SprintBet.Enums;
 
-namespace PlanningPoker.Services
+namespace SprintBet.Services
 {
-    public class VoterService
+    public class VoterService : IVoterService
     {
         /// <summary>
         ///     Collection of players
         /// </summary>
         private List<Voter> _voters = new List<Voter>();
 
-        /// <summary>
-        ///     Get all voters
-        /// </summary>
-        /// <returns></returns>
+        /// <inheritdoc/>
         public IEnumerable<Voter> GetAllVoters()
         {
             return _voters;
         }
 
-        /// <summary>
-        ///     Get all voters by room name
-        /// </summary>
-        /// <returns></returns>
+        /// <inheritdoc/>
         public IEnumerable<Voter> GetVotersByRoomId(string roomId)
         {
             return _voters.Where(voter => voter.Room.Id == roomId);
         }
 
-        /// <summary>
-        ///     Get single voter
-        /// </summary>
-        /// <param name="id"></param>
-        /// <returns></returns>
+        /// <inheritdoc/>
         public Voter GetVoterById(string id)
         {
             return _voters.FirstOrDefault(voter => voter.Id == id);
         }
 
-        /// <summary>
-        ///     Add a new voter
-        /// </summary>
-        /// <returns></returns>
-        /// <remarks>Returns newly created voter</remarks>
+        /// <inheritdoc/>
         public Voter AddVoter(NewVoterDto newVoterDto, Room room)
         {
             var newVoter = new Voter
@@ -66,29 +52,21 @@ namespace PlanningPoker.Services
             return newVoter;
         }
 
-        /// <summary>
-        ///     Remove a voter
-        /// </summary>
-        /// <param name="id"></param>
+        /// <inheritdoc/>
         public void RemoveVoterById(string id)
         {
             var voterToRemove = GetVoterById(id);
             _voters.Remove(voterToRemove);
         }
 
-        /// <summary>
-        ///     Update a single voter
-        /// </summary>
-        /// <param name="updatedVoter"></param>
+        /// <inheritdoc/>
         public void UpdateVoter(Voter updatedVoter)
         {
             var voterIndex = _voters.FindIndex(voter => voter.Id == updatedVoter.Id);
             _voters[voterIndex] = updatedVoter;
         }
 
-        /// <summary>
-        ///     Clear all current votes (for participants)
-        /// </summary>
+        /// <inheritdoc/>
         public void ClearVotesByRoomId(string roomId)
         {
             var voters = _voters.Where(voter => (voter.Role == PlayerType.Participant) && (voter.Room.Id == roomId));
@@ -98,10 +76,7 @@ namespace PlanningPoker.Services
             }
         }
 
-        /// <summary>
-        ///     Remove all voters for a room
-        /// </summary>
-        /// <param name="roomId"></param>
+        /// <inheritdoc/>
         public void RemoveVotersByRoomId(string roomId)
         {
             var participants = _voters.Where(voter => voter.Room.Id == roomId).ToList<Voter>();

@@ -1,4 +1,4 @@
-﻿namespace PlanningPoker.Dtos
+﻿namespace SprintBet.Dtos
 {
     public class NewRoomDto
     {

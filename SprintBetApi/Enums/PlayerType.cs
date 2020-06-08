@@ -1,4 +1,4 @@
-﻿namespace PlanningPoker.Dtos.Enums
+﻿namespace SprintBet.Enums
 {
     /// <summary>
     ///     The different roles a voter can have

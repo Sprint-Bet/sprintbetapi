@@ -3,7 +3,7 @@ Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio 15
 VisualStudioVersion = 15.0.28307.902
 MinimumVisualStudioVersion = 10.0.40219.1
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "PlanningPoker", "PlanningPoker\PlanningPoker.csproj", "{08832C53-4F46-4C40-94B5-779FF83FEA0A}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SprintBetApi", "SprintBetApi\SprintBetApi.csproj", "{DA0F290F-E701-4124-A2FC-469F08082E4B}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -11,10 +11,10 @@ Global
 		Release|Any CPU = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(ProjectConfigurationPlatforms) = postSolution
-		{08832C53-4F46-4C40-94B5-779FF83FEA0A}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{08832C53-4F46-4C40-94B5-779FF83FEA0A}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{08832C53-4F46-4C40-94B5-779FF83FEA0A}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{08832C53-4F46-4C40-94B5-779FF83FEA0A}.Release|Any CPU.Build.0 = Release|Any CPU
+		{DA0F290F-E701-4124-A2FC-469F08082E4B}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{DA0F290F-E701-4124-A2FC-469F08082E4B}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{DA0F290F-E701-4124-A2FC-469F08082E4B}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{DA0F290F-E701-4124-A2FC-469F08082E4B}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
