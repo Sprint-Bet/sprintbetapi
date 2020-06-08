@@ -5,38 +5,26 @@ using PlanningPoker.Dtos;
 
 namespace PlanningPoker.Services
 {
-    public class RoomService
+    public class RoomService : IRoomService
     {
         /// <summary>
         ///     Collection of rooms
         /// </summary>
         private ICollection<Room> _rooms = new List<Room>();
 
-        /// <summary>
-        ///     Get all rooms
-        /// </summary>
-        /// <returns></returns>
+        /// <inheritdoc/>
         public IEnumerable<Room> GetAllRooms()
         {
             return _rooms;
         }
 
-        /// <summary>
-        ///     Get single room
-        /// </summary>
-        /// <param name="id"></param>
-        /// <returns></returns>
+        /// <inheritdoc/>
         public Room GetRoomById(string id)
         {
             return _rooms.FirstOrDefault(room => room.Id == id);
         }
 
-        /// <summary>
-        ///     Add a new room
-        /// </summary>
-        /// <param name="roomType"></param>
-        /// <returns></returns>
-        /// <remarks>Returns newly created room</remarks>
+        /// <inheritdoc/>
         public Room AddRoom(string roomType)
         {
             string[] fibonacciItems = { "1", "2", "3", "5", "8", "13", "20", "?" };
@@ -56,10 +44,7 @@ namespace PlanningPoker.Services
             return newRoom;
         }
 
-        /// <summary>
-        ///     Remove a room
-        /// </summary>
-        /// <param name="room"></param>
+        /// <inheritdoc/>
         public void RemoveRoom(Room room)
         {
             _rooms.Remove(room);

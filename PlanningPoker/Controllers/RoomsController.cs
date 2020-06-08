@@ -1,25 +1,22 @@
 using System;
 using System.Threading.Tasks;
-using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.AspNetCore.Mvc.Routing;
 using Microsoft.AspNetCore.SignalR;
 using PlanningPoker.Dtos;
 using PlanningPoker.Hubs;
-using PlanningPoker.Interfaces;
 using PlanningPoker.Services;
 
 namespace PlanningPoker.Controllers
 {
     [Route("[controller]")]
     [ApiController]
-    public class RoomsController : ControllerBase
+    public class RoomsController : SprintBetController
     {
-        private IHubContext<VoteHub, IHubClient> _hubContext;
-        private VoterService _voterService;
-        private RoomService _roomService;
+        private IHubContext<VoteHub, IVoteHub> _hubContext;
+        private IVoterService _voterService;
+        private IRoomService _roomService;
 
-        public RoomsController(IHubContext<VoteHub, IHubClient> hubContext, VoterService voterService, RoomService roomService)
+        public RoomsController(IHubContext<VoteHub, IVoteHub> hubContext, IVoterService voterService, IRoomService roomService)
         {
             _hubContext = hubContext;
             _voterService = voterService;
@@ -103,7 +100,7 @@ namespace PlanningPoker.Controllers
             var room = _roomService.GetRoomById(roomId);
             if (room == null)
             {
-                return NotFound();  
+                return NotFound();
             }
 
             room.VotingLocked = false;
@@ -133,24 +130,6 @@ namespace PlanningPoker.Controllers
             _roomService.RemoveRoom(room);
 
             return NoContent();
-        }
-
-        /// <summary>
-        ///     Helper uri builder method
-        /// </summary>
-        /// <param name="request"></param>
-        /// <returns></returns>
-        public static Uri GetBaseUri(HttpRequest request, string path)
-        {
-            var uriBuilder = new UriBuilder
-            {
-                Scheme = request.Scheme,
-                Host = request.Host.Host,
-                Port = request.Host.Port.GetValueOrDefault(-1),
-                Path = path
-            };
-
-            return uriBuilder.Uri;
         }
     }
 }

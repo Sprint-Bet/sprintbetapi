@@ -1,5 +1,4 @@
-﻿using System;
-using PlanningPoker.Dtos.Enums;
+﻿using PlanningPoker.Enums;
 
 namespace PlanningPoker.Dtos
 {
