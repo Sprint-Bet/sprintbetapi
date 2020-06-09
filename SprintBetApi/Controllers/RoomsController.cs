@@ -46,7 +46,7 @@ namespace SprintBet.Controllers
             return Ok(room);
         }
 
-        [HttpPost("create")]
+        [HttpPost]
         public async Task<IActionResult> CreateRoom([FromBody] NewRoomDto newRoomDto, [FromHeader] string connectionId)
         {
             if (String.IsNullOrWhiteSpace(connectionId))
@@ -69,9 +69,14 @@ namespace SprintBet.Controllers
             return Created(location.ToString(), newRoom);
         }
 
-        [HttpPut("{roomId}/lock")]
-        public async Task<IActionResult> LockVoting([FromRoute] string roomId)
+        [HttpPut("{roomId}/locked")]
+        public async Task<IActionResult> LockVoting([FromRoute] string roomId, [FromBody] UpdatedRoomLockedDto updatedRoomLockedDto)
         {
+            if (updatedRoomLockedDto == null)
+            {
+                return BadRequest();
+            }
+
             if (String.IsNullOrWhiteSpace(roomId))
             {
                 return BadRequest();
@@ -83,36 +88,23 @@ namespace SprintBet.Controllers
                 return NotFound();
             }
 
-            room.VotingLocked = true;
-            await _hubContext.Clients.Group(room.Id).VotingLocked();
+            room.Locked = updatedRoomLockedDto.Lock;
 
-            return Ok(room);
-        }
-
-        [HttpPut("{roomId}/clear")]
-        public async Task<IActionResult> ClearVotes([FromRoute] string roomId)
-        {
-            if (String.IsNullOrWhiteSpace(roomId))
+            if (room.Locked)
             {
-                return BadRequest();
+                await _hubContext.Clients.Group(room.Id).VotingLocked();
+                return Ok(room.Locked);
             }
 
-            var room = _roomService.GetRoomById(roomId);
-            if (room == null)
-            {
-                return NotFound();
-            }
-
-            room.VotingLocked = false;
             _voterService.ClearVotesByRoomId(room.Id);
 
             await _hubContext.Clients.Group(room.Id).VotingUpdated(_voterService.GetVotersByRoomId(room.Id));
             await _hubContext.Clients.Group(room.Id).VotingUnlocked();
 
-            return Ok(room);
+            return Ok(room.Locked);
         }
 
-        [HttpDelete("{roomId}/finish")]
+        [HttpDelete("{roomId}")]
         public IActionResult FinishGame([FromRoute] string roomId)
         {
             if (String.IsNullOrWhiteSpace(roomId))

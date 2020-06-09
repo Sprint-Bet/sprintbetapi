@@ -7,6 +7,10 @@ using Microsoft.Extensions.Hosting;
 using SprintBet.Hubs;
 using SprintBet.Services;
 
+using Microsoft.Extensions.Options;
+using System.Linq;
+using Microsoft.AspNetCore.Mvc.Formatters;
+
 namespace SprintBet
 {
     public class Startup
@@ -43,6 +47,11 @@ namespace SprintBet
             }).SetCompatibilityVersion(CompatibilityVersion.Version_3_0);
 
             services.AddControllers().AddNewtonsoftJson();
+
+            services.AddControllersWithViews(options =>
+            {
+                options.InputFormatters.Insert(0, GetJsonPatchInputFormatter());
+            });
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
@@ -65,6 +74,23 @@ namespace SprintBet
             app.UseHttpsRedirection();
 
             app.UseMvc();
+        }
+
+        // Support for JSON Patch
+        private static NewtonsoftJsonPatchInputFormatter GetJsonPatchInputFormatter()
+        {
+            var builder = new ServiceCollection()
+                .AddLogging()
+                .AddMvc()
+                .AddNewtonsoftJson()
+                .Services.BuildServiceProvider();
+
+            return builder
+                .GetRequiredService<IOptions<MvcOptions>>()
+                .Value
+                .InputFormatters
+                .OfType<NewtonsoftJsonPatchInputFormatter>()
+                .First();
         }
     }
 }

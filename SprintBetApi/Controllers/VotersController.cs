@@ -1,11 +1,13 @@
 ﻿using System;
 using System.Linq;
 using System.Threading.Tasks;
+using Microsoft.AspNetCore.JsonPatch;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.SignalR;
 using SprintBet.Dtos;
 using SprintBet.Hubs;
 using SprintBet.Services;
+using SprintBetApi.Dtos;
 
 namespace SprintBet.Controllers
 {
@@ -24,7 +26,18 @@ namespace SprintBet.Controllers
             _roomService = roomService;
         }
 
-        [HttpPost("register")]
+        [HttpGet]
+        public IActionResult GetVoters([FromQuery] string roomId = "") 
+        {
+            if (string.IsNullOrWhiteSpace(roomId))
+            {
+                return Ok(_voterService.GetAllVoters());
+            }
+
+            return Ok(_voterService.GetVotersByRoomId(roomId));
+        }
+
+        [HttpPost]
         public async Task<IActionResult> SetupPlayer([FromBody] NewVoterDto newVoterDto)
         {
             if (string.IsNullOrWhiteSpace(newVoterDto.Name) || string.IsNullOrWhiteSpace(newVoterDto.Group))
@@ -49,17 +62,6 @@ namespace SprintBet.Controllers
             return Created(location.ToString(), newVoter);
         }
 
-        [HttpGet]
-        public IActionResult GetVoters([FromQuery] string roomId = "") 
-        {
-            if (string.IsNullOrWhiteSpace(roomId))
-            {
-                return Ok(_voterService.GetAllVoters());
-            }
-
-            return Ok(_voterService.GetVotersByRoomId(roomId));
-        }
-
         [HttpGet("{id}")]
         public IActionResult GetVoterById([FromRoute] string id)
         {
@@ -80,7 +82,12 @@ namespace SprintBet.Controllers
         [HttpGet("{id}/reconnect")]
         public async Task<IActionResult> GetVoterById([FromRoute] string id, [FromHeader] string connectionId)
         {
-            if (string.IsNullOrWhiteSpace(id) || string.IsNullOrWhiteSpace(connectionId))
+            if (string.IsNullOrWhiteSpace(connectionId))
+            {
+                return BadRequest(new ResponseError("No valid connection id provided"));
+            }
+
+            if (string.IsNullOrWhiteSpace(id))
             {
                 return BadRequest();
             }
@@ -96,7 +103,7 @@ namespace SprintBet.Controllers
             return Ok(voter);
         }
 
-        [HttpPut("{id}/cast")]
+        [HttpPut("{id}/point")]
         public async Task<IActionResult> CastVote([FromRoute] string id, [FromBody] UpdatedVoteDto updatedVoteDto)
         {
             if (string.IsNullOrWhiteSpace(id))
@@ -120,10 +127,11 @@ namespace SprintBet.Controllers
 
             await _hubContext.Clients.Group(voter.Room.Id).VotingUpdated(_voterService.GetVotersByRoomId(voter.Room.Id));
 
-            return Ok();
+            return Ok(voter.Point);
         }
 
-        [HttpPut("{id}/change-role")]
+
+        [HttpPut("{id}/role")]
         public async Task<IActionResult> ChangeRole([FromRoute] string id, [FromBody] UpdatedRoleDto updatedRoleDto)
         {
             if (string.IsNullOrWhiteSpace(id))
@@ -134,7 +142,7 @@ namespace SprintBet.Controllers
             var voter = _voterService.GetVoterById(id);
             if (voter == null)
             {
-                return NotFound(voter);
+                return NotFound();
             }
 
             voter.Role = updatedRoleDto.Role;
@@ -142,11 +150,11 @@ namespace SprintBet.Controllers
 
             await _hubContext.Clients.Group(voter.Room.Id).VotingUpdated(_voterService.GetVotersByRoomId(voter.Room.Id));
 
-            return Ok(voter);
+            return Ok(voter.Role);
 
         }
 
-        [HttpDelete("{id}/leave")]
+        [HttpDelete("{id}")]
         public async Task<IActionResult> RemoveVoter([FromRoute] string id, [FromHeader] string connectionId)
         {
             if (string.IsNullOrWhiteSpace(id) || string.IsNullOrWhiteSpace(connectionId))
@@ -167,5 +175,6 @@ namespace SprintBet.Controllers
 
             return NoContent();
         }
+
     }
 }

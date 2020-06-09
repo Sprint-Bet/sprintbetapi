@@ -35,7 +35,7 @@ namespace SprintBet.Services
             var newRoom = new Room
             {
                 Id = DateTimeOffset.Now.ToUnixTimeSeconds().ToString("X"),
-                VotingLocked = false,
+                Locked = false,
                 Items = items
             };
 
