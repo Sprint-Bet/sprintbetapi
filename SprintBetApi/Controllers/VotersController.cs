@@ -1,12 +1,12 @@
 ﻿using System;
 using System.Linq;
 using System.Threading.Tasks;
-using Microsoft.AspNetCore.JsonPatch;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.SignalR;
 using SprintBet.Dtos;
 using SprintBet.Hubs;
 using SprintBet.Services;
+using SprintBetApi.Attributes;
 using SprintBetApi.Dtos;
 
 namespace SprintBet.Controllers
@@ -37,18 +37,31 @@ namespace SprintBet.Controllers
             return Ok(_voterService.GetVotersByRoomId(roomId));
         }
 
+        [HttpGet("{voterId}")]
+        [TypeFilter(typeof(ValidateVoter))]
+        public IActionResult GetVoterById([FromRoute] string voterId)
+        {
+            if (!ModelState.IsValid)
+            {
+                return BadRequest(ModelState);
+            }
+
+            var voter = _voterService.GetVoterById(voterId);
+            return Ok(voter);
+        }
+
         [HttpPost]
         public async Task<IActionResult> SetupPlayer([FromBody] NewVoterDto newVoterDto)
         {
-            if (string.IsNullOrWhiteSpace(newVoterDto.Name) || string.IsNullOrWhiteSpace(newVoterDto.Group))
+            if (!ModelState.IsValid)
             {
-                return BadRequest();
+                return BadRequest(ModelState);
             }
 
             var room = _roomService.GetRoomById(newVoterDto.Group);
             if (room == null)
             {
-                return NotFound();
+                return BadRequest("No room found for the provided id");
             }
 
             var newVoter = _voterService.AddVoter(newVoterDto, room);
@@ -56,70 +69,42 @@ namespace SprintBet.Controllers
             await _hubContext.Groups.AddToGroupAsync(newVoterDto.ConnectionId, newVoter.Room.Id);
             await _hubContext.Clients.Group(newVoter.Room.Id).VotingUpdated(_voterService.GetVotersByRoomId(newVoter.Room.Id));
 
-            var locationPath = $"voters/{newVoter.Id}";
-            var location = GetBaseUri(Request, locationPath);
-
-            return Created(location.ToString(), newVoter);
+            return Created(GetBaseUri(Request, $"voters/{newVoter.Id}").ToString(), newVoter);
         }
 
-        [HttpGet("{id}")]
-        public IActionResult GetVoterById([FromRoute] string id)
+        [HttpGet("{voterId}/reconnect")]
+        [TypeFilter(typeof(ValidateVoter))]
+        public async Task<IActionResult> GetVoterById([FromRoute] string voterId, [FromHeader] string connectionId)
         {
-            if (string.IsNullOrWhiteSpace(id))
+            if (!ModelState.IsValid)
             {
-                return BadRequest();
+                return BadRequest(ModelState);
             }
 
-            var voter = _voterService.GetVoterById(id);
-            if (voter == null)
-            {
-                return NotFound(voter);
-            }
-
-            return Ok(voter);
-        }
-
-        [HttpGet("{id}/reconnect")]
-        public async Task<IActionResult> GetVoterById([FromRoute] string id, [FromHeader] string connectionId)
-        {
             if (string.IsNullOrWhiteSpace(connectionId))
             {
-                return BadRequest(new ResponseError("No valid connection id provided"));
+                return BadRequest(new ErrorMessage("Invalid connection id"));
             }
 
-            if (string.IsNullOrWhiteSpace(id))
-            {
-                return BadRequest();
-            }
-
-            var voter = _voterService.GetVoterById(id);
-            if (voter == null)
-            {
-                return NotFound(voter);
-            }
-
+            var voter = _voterService.GetVoterById(voterId);
             await _hubContext.Groups.AddToGroupAsync(connectionId, voter.Room.Id);
 
             return Ok(voter);
         }
 
-        [HttpPut("{id}/point")]
-        public async Task<IActionResult> CastVote([FromRoute] string id, [FromBody] UpdatedVoteDto updatedVoteDto)
+        [HttpPut("{voterId}/point")]
+        [TypeFilter(typeof(ValidateVoter))]
+        public async Task<IActionResult> CastVote([FromRoute] string voterId, [FromBody] UpdatedVoteDto updatedVoteDto)
         {
-            if (string.IsNullOrWhiteSpace(id))
+            if (!ModelState.IsValid)
             {
-                return BadRequest();
+                return BadRequest(ModelState);
             }
 
-            var voter = _voterService.GetVoterById(id);
-            if (voter == null)
-            {
-                return NotFound(voter);
-            }
-
+            var voter = _voterService.GetVoterById(voterId);
             if (updatedVoteDto.Point != "" && !voter.Room.Items.Contains(updatedVoteDto.Point))
             {
-                return BadRequest();
+                return BadRequest(new ErrorMessage("Invalid vote value"));
             }
 
             voter.Point = updatedVoteDto.Point;
@@ -131,44 +116,39 @@ namespace SprintBet.Controllers
         }
 
 
-        [HttpPut("{id}/role")]
-        public async Task<IActionResult> ChangeRole([FromRoute] string id, [FromBody] UpdatedRoleDto updatedRoleDto)
+        [HttpPut("{voterId}/role")]
+        [TypeFilter(typeof(ValidateVoter))]
+        public async Task<IActionResult> ChangeRole([FromRoute] string voterId, [FromBody] UpdatedRoleDto updatedRoleDto)
         {
-            if (string.IsNullOrWhiteSpace(id))
+            if (!ModelState.IsValid)
             {
-                return BadRequest();
+                return BadRequest(ModelState);
             }
 
-            var voter = _voterService.GetVoterById(id);
-            if (voter == null)
-            {
-                return NotFound();
-            }
-
+            var voter = _voterService.GetVoterById(voterId);
             voter.Role = updatedRoleDto.Role;
-            _voterService.UpdateVoter(voter);
 
+            _voterService.UpdateVoter(voter);
             await _hubContext.Clients.Group(voter.Room.Id).VotingUpdated(_voterService.GetVotersByRoomId(voter.Room.Id));
 
             return Ok(voter.Role);
-
         }
 
-        [HttpDelete("{id}")]
-        public async Task<IActionResult> RemoveVoter([FromRoute] string id, [FromHeader] string connectionId)
+        [HttpDelete("{voterId}")]
+        public async Task<IActionResult> RemoveVoter([FromRoute] string voterId, [FromHeader] string connectionId)
         {
-            if (string.IsNullOrWhiteSpace(id) || string.IsNullOrWhiteSpace(connectionId))
+            if (!ModelState.IsValid)
             {
-                return BadRequest();
+                return BadRequest(ModelState);
             }
 
-            var voter = _voterService.GetVoterById(id);
-            if (voter == null)
+            if (string.IsNullOrWhiteSpace(connectionId))
             {
-                return NotFound(voter);
+                return BadRequest(new ErrorMessage("Invalid connection id"));
             }
 
-            _voterService.RemoveVoterById(id);
+            var voter = _voterService.GetVoterById(voterId);
+            _voterService.RemoveVoterById(voterId);
 
             await _hubContext.Groups.RemoveFromGroupAsync(connectionId, voter.Room.Id);
             await _hubContext.Clients.Group(voter.Room.Id).VotingUpdated(_voterService.GetVotersByRoomId(voter.Room.Id));

@@ -1,10 +1,11 @@
-using System;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.SignalR;
 using SprintBet.Dtos;
 using SprintBet.Hubs;
 using SprintBet.Services;
+using SprintBetApi.Attributes;
+using SprintBetApi.Dtos;
 
 namespace SprintBet.Controllers
 {
@@ -30,64 +31,47 @@ namespace SprintBet.Controllers
         }
 
         [HttpGet("{roomId}")]
+        [TypeFilter(typeof(ValidateRoom))]
         public IActionResult GetRoomById([FromRoute] string roomId)
         {
-            if (string.IsNullOrWhiteSpace(roomId))
+            if (!ModelState.IsValid)
             {
-                return BadRequest();
+                return BadRequest(ModelState);
             }
 
             var room = _roomService.GetRoomById(roomId);
-            if (room == null)
-            {
-                return NotFound();
-            }
-
             return Ok(room);
         }
 
         [HttpPost]
         public async Task<IActionResult> CreateRoom([FromBody] NewRoomDto newRoomDto, [FromHeader] string connectionId)
         {
-            if (String.IsNullOrWhiteSpace(connectionId))
+            if (!ModelState.IsValid)
             {
-                return BadRequest();
+                return BadRequest(ModelState);
             }
 
-            var itemsType = newRoomDto?.ItemsType;
-            if (String.IsNullOrWhiteSpace(itemsType))
+            if (string.IsNullOrWhiteSpace(connectionId))
             {
-                return BadRequest();
+                return BadRequest(new ErrorMessage("Invalid connection id"));
             }
 
-            var newRoom = _roomService.AddRoom(itemsType);
-
+            var newRoom = _roomService.AddRoom(newRoomDto.ItemsType);
             await _hubContext.Groups.AddToGroupAsync(connectionId, newRoom.Id);
 
-            var location = GetBaseUri(Request, $"rooms/{newRoom.Id}");
-
-            return Created(location.ToString(), newRoom);
+            return Created(GetBaseUri(Request, $"rooms/{newRoom.Id}").ToString(), newRoom);
         }
 
         [HttpPut("{roomId}/locked")]
+        [TypeFilter(typeof(ValidateRoom))]
         public async Task<IActionResult> LockVoting([FromRoute] string roomId, [FromBody] UpdatedRoomLockedDto updatedRoomLockedDto)
         {
-            if (updatedRoomLockedDto == null)
+            if (!ModelState.IsValid)
             {
-                return BadRequest();
-            }
-
-            if (String.IsNullOrWhiteSpace(roomId))
-            {
-                return BadRequest();
+                return BadRequest(ModelState);
             }
 
             var room = _roomService.GetRoomById(roomId);
-            if (room == null)
-            {
-                return NotFound();
-            }
-
             room.Locked = updatedRoomLockedDto.Lock;
 
             if (room.Locked)
@@ -97,26 +81,22 @@ namespace SprintBet.Controllers
             }
 
             _voterService.ClearVotesByRoomId(room.Id);
-
             await _hubContext.Clients.Group(room.Id).VotingUpdated(_voterService.GetVotersByRoomId(room.Id));
-            await _hubContext.Clients.Group(room.Id).VotingUnlocked();
 
+            await _hubContext.Clients.Group(room.Id).VotingUnlocked();
             return Ok(room.Locked);
         }
 
         [HttpDelete("{roomId}")]
+        [TypeFilter(typeof(ValidateRoom))]
         public IActionResult FinishGame([FromRoute] string roomId)
         {
-            if (String.IsNullOrWhiteSpace(roomId))
+            if (!ModelState.IsValid)
             {
-                return BadRequest();
+                return BadRequest(ModelState);
             }
 
             var room = _roomService.GetRoomById(roomId);
-            if (room == null)
-            {
-                return NotFound();
-            }
 
             _voterService.RemoveVotersByRoomId(room.Id);
             _roomService.RemoveRoom(room);

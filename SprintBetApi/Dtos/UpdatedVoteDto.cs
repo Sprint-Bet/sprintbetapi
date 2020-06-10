@@ -1,5 +1,4 @@
-﻿using System;
-namespace SprintBet.Dtos
+﻿namespace SprintBet.Dtos
 {
     public class UpdatedVoteDto
     {
