@@ -1,8 +1,8 @@
 ﻿namespace SprintBetApi.Dtos
 {
-    public class ResponseError
+    public class ErrorMessage
     {
-        public ResponseError(string error)
+        public ErrorMessage(string error)
         {
             Message = error;
         }
