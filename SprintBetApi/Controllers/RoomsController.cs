@@ -1,3 +1,4 @@
+using System.Linq;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.SignalR;
@@ -36,7 +37,9 @@ namespace SprintBet.Controllers
         {
             if (!ModelState.IsValid)
             {
-                return BadRequest(ModelState);
+                return ModelState.ContainsKey("roomNotFound")
+                    ? (IActionResult)NotFound(ModelState.Values.First(v => v.Errors.Count > 0))
+                    : (IActionResult)BadRequest(ModelState.Values.First(v => v.Errors.Count > 0));
             }
 
             var room = _roomService.GetRoomById(roomId);
@@ -68,7 +71,9 @@ namespace SprintBet.Controllers
         {
             if (!ModelState.IsValid)
             {
-                return BadRequest(ModelState);
+                return ModelState.ContainsKey("roomNotFound")
+                    ? (IActionResult)NotFound(ModelState.Values.First(v => v.Errors.Count > 0))
+                    : (IActionResult)BadRequest(ModelState.Values.First(v => v.Errors.Count > 0));
             }
 
             var room = _roomService.GetRoomById(roomId);
@@ -93,7 +98,9 @@ namespace SprintBet.Controllers
         {
             if (!ModelState.IsValid)
             {
-                return BadRequest(ModelState);
+                return ModelState.ContainsKey("roomNotFound")
+                    ? (IActionResult)NotFound(ModelState.Values.First(v => v.Errors.Count > 0))
+                    : (IActionResult)BadRequest(ModelState.Values.First(v => v.Errors.Count > 0));
             }
 
             var room = _roomService.GetRoomById(roomId);

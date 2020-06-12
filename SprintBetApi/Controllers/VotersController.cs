@@ -43,7 +43,9 @@ namespace SprintBet.Controllers
         {
             if (!ModelState.IsValid)
             {
-                return BadRequest(ModelState);
+                return ModelState.ContainsKey("voterNotFound")
+                    ? (IActionResult)NotFound(ModelState.Values.First(v => v.Errors.Count > 0))
+                    : (IActionResult)BadRequest(ModelState.Values.First(v => v.Errors.Count > 0));
             }
 
             var voter = _voterService.GetVoterById(voterId);
@@ -78,7 +80,9 @@ namespace SprintBet.Controllers
         {
             if (!ModelState.IsValid)
             {
-                return BadRequest(ModelState);
+                return ModelState.ContainsKey("voterNotFound")
+                    ? (IActionResult)NotFound(ModelState.Values.First(v => v.Errors.Count > 0))
+                    : (IActionResult)BadRequest(ModelState.Values.First(v => v.Errors.Count > 0));
             }
 
             if (string.IsNullOrWhiteSpace(connectionId))
@@ -98,7 +102,9 @@ namespace SprintBet.Controllers
         {
             if (!ModelState.IsValid)
             {
-                return BadRequest(ModelState);
+                return ModelState.ContainsKey("voterNotFound")
+                    ? (IActionResult)NotFound(ModelState.Values.First(v => v.Errors.Count > 0))
+                    : (IActionResult)BadRequest(ModelState.Values.First(v => v.Errors.Count > 0));
             }
 
             var voter = _voterService.GetVoterById(voterId);
@@ -122,7 +128,9 @@ namespace SprintBet.Controllers
         {
             if (!ModelState.IsValid)
             {
-                return BadRequest(ModelState);
+                return ModelState.ContainsKey("voterNotFound")
+                    ? (IActionResult)NotFound(ModelState.Values.First(v => v.Errors.Count > 0))
+                    : (IActionResult)BadRequest(ModelState.Values.First(v => v.Errors.Count > 0));
             }
 
             var voter = _voterService.GetVoterById(voterId);
@@ -135,11 +143,14 @@ namespace SprintBet.Controllers
         }
 
         [HttpDelete("{voterId}")]
+        [TypeFilter(typeof(ValidateVoter))]
         public async Task<IActionResult> RemoveVoter([FromRoute] string voterId, [FromHeader] string connectionId)
         {
             if (!ModelState.IsValid)
             {
-                return BadRequest(ModelState);
+                return ModelState.ContainsKey("voterNotFound")
+                    ? (IActionResult)NotFound(ModelState.Values.First(v => v.Errors.Count > 0))
+                    : (IActionResult)BadRequest(ModelState.Values.First(v => v.Errors.Count > 0));
             }
 
             if (string.IsNullOrWhiteSpace(connectionId))

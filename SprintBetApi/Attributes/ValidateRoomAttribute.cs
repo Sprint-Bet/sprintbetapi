@@ -18,10 +18,6 @@ namespace SprintBetApi.Attributes
             if (string.IsNullOrWhiteSpace(roomId))
             {
                 context.ModelState.AddModelError("roomId", "Invalid room id");
-            }
-
-            if (!context.ModelState.IsValid)
-            {
                 return;
             }
 

@@ -18,10 +18,6 @@ namespace SprintBetApi.Attributes
             if (string.IsNullOrWhiteSpace(voterId))
             {
                 context.ModelState.AddModelError("voterId", "Invalid voter id");
-            }
-
-            if (!context.ModelState.IsValid)
-            {
                 return;
             }
 
