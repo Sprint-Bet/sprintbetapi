@@ -17,7 +17,7 @@ namespace SprintBet.Dtos
         /// <summary>
         ///     The room's current voting locked status
         /// </summary>
-        public bool VotingLocked { get; set; }
+        public bool Locked { get; set; }
 
         /// <summary>
         ///     The voting items used by the room

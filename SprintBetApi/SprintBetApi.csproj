@@ -7,6 +7,7 @@
 
   <PropertyGroup Condition=" '$(RunConfiguration)' == 'SprintBet' ">
     <StartAction>Project</StartAction>
+    <ExternalConsole>true</ExternalConsole>
     <LaunchUrl>rooms</LaunchUrl>
     <ApplicationURL>https://localhost:5001;http://localhost:5000</ApplicationURL>
   </PropertyGroup>
@@ -19,5 +20,6 @@
   <ItemGroup>
     <Folder Include="Services\" />
     <Folder Include="Enums\" />
+    <Folder Include="Attributes\" />
   </ItemGroup>
 </Project>

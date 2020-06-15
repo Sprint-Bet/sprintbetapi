@@ -1,14 +1,13 @@
 ﻿using System.ComponentModel.DataAnnotations;
-using SprintBet.Enums;
 
 namespace SprintBet.Dtos
 {
-    public class UpdatedRoleDto
+    public class UpdatedRoomLockedDto
     {
         /// <summary>
-        ///     The new voter role
+        ///     The new locked status for a room
         /// </summary>
         [Required]
-        public PlayerType Role { get; set; }
+        public bool Lock { get; set; }
     }
 }
