@@ -3,27 +3,32 @@ using System.Linq;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.SignalR;
-using SprintBet.Dtos;
-using SprintBet.Hubs;
-using SprintBet.Services;
-using SprintBetApi.Attributes;
 using SprintBetApi.Dtos;
+using SprintBetApi.Hubs;
+using SprintBetApi.Services;
+using SprintBetApi.Attributes;
 
-namespace SprintBet.Controllers
+namespace SprintBetApi.Controllers
 {
     [Route("[controller]")]
     [ApiController]
-    public class VotersController : SprintBetController
+    public class VotersController : SprintBetBaseController
     {
         private IHubContext<VoteHub, IVoteHub> _hubContext;
         private IVoterService _voterService;
         private IRoomService _roomService;
+        private IAuthService _authService;
 
-        public VotersController(IHubContext<VoteHub, IVoteHub> hubContext, IVoterService voterService, IRoomService roomService)
+        public VotersController(
+            IHubContext<VoteHub, IVoteHub> hubContext,
+            IVoterService voterService,
+            IRoomService roomService,
+            IAuthService authService)
         {
             _hubContext = hubContext;
             _voterService = voterService;
             _roomService = roomService;
+            _authService = authService;
         }
 
         [HttpGet]
@@ -71,7 +76,8 @@ namespace SprintBet.Controllers
             await _hubContext.Groups.AddToGroupAsync(newVoterDto.ConnectionId, newVoter.Room.Id);
             await _hubContext.Clients.Group(newVoter.Room.Id).VotingUpdated(_voterService.GetVotersByRoomId(newVoter.Room.Id));
 
-            return Created(GetBaseUri(Request, $"voters/{newVoter.Id}").ToString(), newVoter);
+            var resourcePath = GetBaseUri(Request, $"voters/{newVoter.Id}").ToString();
+            return Created(resourcePath, newVoter);
         }
 
         [HttpGet("{voterId}/reconnect")]

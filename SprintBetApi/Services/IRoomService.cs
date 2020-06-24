@@ -1,7 +1,7 @@
 ﻿using System.Collections.Generic;
-using SprintBet.Dtos;
+using SprintBetApi.Dtos;
 
-namespace SprintBet.Services
+namespace SprintBetApi.Services
 {
     /// <summary>
     ///     Interface for RoomService that interacts directy with stored rooms

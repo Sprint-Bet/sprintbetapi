@@ -1,10 +1,11 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
-using SprintBet.Dtos;
+using SprintBetApi.Dtos;
 
-namespace SprintBet.Services
+namespace SprintBetApi.Services
 {
+    /// <inheritdoc/>
     public class RoomService : IRoomService
     {
         /// <summary>

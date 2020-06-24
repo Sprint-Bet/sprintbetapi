@@ -1,4 +1,4 @@
-﻿namespace SprintBet.Enums
+﻿namespace SprintBetApi.Enums
 {
     /// <summary>
     ///     The different roles a voter can have

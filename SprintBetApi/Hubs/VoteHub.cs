@@ -2,7 +2,7 @@
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.SignalR;
 
-namespace SprintBet.Hubs
+namespace SprintBetApi.Hubs
 {
     public class VoteHub: Hub<IVoteHub>
     {

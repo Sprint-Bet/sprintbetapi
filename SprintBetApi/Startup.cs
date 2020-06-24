@@ -4,8 +4,8 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
-using SprintBet.Hubs;
-using SprintBet.Services;
+using SprintBetApi.Hubs;
+using SprintBetApi.Services;
 
 namespace SprintBet
 {
@@ -36,6 +36,7 @@ namespace SprintBet
 
             services.AddSingleton<IVoterService, VoterService>();
             services.AddSingleton<IRoomService, RoomService>();
+            services.AddSingleton<IAuthService, AuthService>();
 
             services.AddMvc(option =>
             {

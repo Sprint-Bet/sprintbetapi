@@ -1,4 +1,4 @@
-﻿namespace SprintBet.Dtos
+﻿namespace SprintBetApi.Dtos
 {
     public class NewRoomDto
     {

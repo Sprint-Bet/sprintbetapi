@@ -2,17 +2,16 @@ using System.Linq;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.SignalR;
-using SprintBet.Dtos;
-using SprintBet.Hubs;
-using SprintBet.Services;
-using SprintBetApi.Attributes;
 using SprintBetApi.Dtos;
+using SprintBetApi.Hubs;
+using SprintBetApi.Services;
+using SprintBetApi.Attributes;
 
-namespace SprintBet.Controllers
+namespace SprintBetApi.Controllers
 {
     [Route("[controller]")]
     [ApiController]
-    public class RoomsController : SprintBetController
+    public class RoomsController : SprintBetBaseController
     {
         private IHubContext<VoteHub, IVoteHub> _hubContext;
         private IVoterService _voterService;
