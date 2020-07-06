@@ -27,7 +27,10 @@ namespace SprintBet
                 {
                     builder.AllowAnyMethod()
                         .AllowAnyHeader()
-                        .WithOrigins("https://sprintbet.herokuapp.com", "https://localhost:8888", "http://localhost:8888")
+                        .WithOrigins("https://sprintbet.herokuapp.com",
+                            "https://sprintbet-staging.herokuapp.com/",
+                            "https://localhost:8888",
+                            "http://localhost:8888")
                         .AllowCredentials();
                 });
             });
