@@ -6,7 +6,6 @@
     public enum PlayerType
     {
         Participant,
-        Spectator,
-        Dealer
+        Spectator
     }
 }
