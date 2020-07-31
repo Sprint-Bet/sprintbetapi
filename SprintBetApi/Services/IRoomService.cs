@@ -1,5 +1,6 @@
 ﻿using System.Collections.Generic;
 using SprintBet.Dtos;
+using SprintBet.Enums;
 
 namespace SprintBet.Services
 {
@@ -26,7 +27,7 @@ namespace SprintBet.Services
         /// </summary>
         /// <param name="roomType"></param>
         /// <returns>The newly created room</returns>
-        public Room AddRoom(string roomType);
+        public Room AddRoom(RoomType roomType);
 
         /// <summary>
         ///     Remove a room
