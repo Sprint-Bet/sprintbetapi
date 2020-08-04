@@ -30,6 +30,13 @@ namespace SprintBet.Services
         public Room AddRoom(RoomType roomType);
 
         /// <summary>
+        ///     Get a rooms items
+        /// </summary>
+        /// <param name="roomType"></param>
+        /// <returns></returns>
+        public IEnumerable<string> GetItemsByRoomType(RoomType roomType);
+
+        /// <summary>
         ///     Remove a room
         /// </summary>
         /// <param name="room"></param>
