@@ -105,9 +105,14 @@ namespace SprintBet.Controllers
 
             var room = _roomService.GetRoomById(roomId);
             room.Items = _roomService.GetItemsByRoomType(updatedRoomItemsDto.ItemsType);
-
             _voterService.ClearVotesByRoomId(room.Id);
+
             await _hubContext.Clients.Group(room.Id).VotingUpdated(_voterService.GetVotersByRoomId(room.Id));
+            
+            if (room.Locked)
+            {
+                await _hubContext.Clients.Group(room.Id).VotingUnlocked();
+            }
 
             return Ok(room.Items);
         }
