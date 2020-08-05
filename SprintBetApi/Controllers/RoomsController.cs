@@ -111,6 +111,7 @@ namespace SprintBet.Controllers
             
             if (room.Locked)
             {
+                room.Locked = false;
                 await _hubContext.Clients.Group(room.Id).VotingUnlocked();
             }
 
