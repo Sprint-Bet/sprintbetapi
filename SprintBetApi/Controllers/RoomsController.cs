@@ -92,6 +92,32 @@ namespace SprintBet.Controllers
             return Ok(room.Locked);
         }
 
+        [HttpPut("{roomId}/items")]
+        [TypeFilter(typeof(ValidateRoom))]
+        public async Task<IActionResult> ChangeItems([FromRoute] string roomId, [FromBody] UpdatedRoomItemsDto updatedRoomItemsDto)
+        {
+            if (!ModelState.IsValid)
+            {
+                return ModelState.ContainsKey("roomNotFound")
+                    ? (IActionResult)NotFound(ModelState.Values.First(v => v.Errors.Count > 0))
+                    : (IActionResult)BadRequest(ModelState.Values.First(v => v.Errors.Count > 0));
+            }
+
+            var room = _roomService.GetRoomById(roomId);
+            room.Items = _roomService.GetItemsByRoomType(updatedRoomItemsDto.ItemsType);
+            _voterService.ClearVotesByRoomId(room.Id);
+
+            await _hubContext.Clients.Group(room.Id).VotingUpdated(_voterService.GetVotersByRoomId(room.Id));
+            
+            if (room.Locked)
+            {
+                room.Locked = false;
+                await _hubContext.Clients.Group(room.Id).VotingUnlocked();
+            }
+
+            return Ok(room.Items);
+        }
+
         [HttpDelete("{roomId}")]
         [TypeFilter(typeof(ValidateRoom))]
         public IActionResult FinishGame([FromRoute] string roomId)
