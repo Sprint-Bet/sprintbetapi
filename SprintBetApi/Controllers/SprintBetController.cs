@@ -2,9 +2,9 @@
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 
-namespace SprintBet.Controllers
+namespace SprintBetApi.Controllers
 {
-    public class SprintBetController : ControllerBase
+    public class SprintBetBaseController : ControllerBase
     {
         /// <summary>
         ///     Helper uri builder method

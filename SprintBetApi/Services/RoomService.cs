@@ -1,10 +1,10 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
-using SprintBet.Dtos;
-using SprintBet.Enums;
+using SprintBetApi.Enums;
+using SprintBetApi.Dtos;
 
-namespace SprintBet.Services
+namespace SprintBetApi.Services
 {
     public class RoomService : IRoomService
     {

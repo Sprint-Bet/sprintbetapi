@@ -1,6 +1,6 @@
-﻿using SprintBet.Enums;
+﻿using SprintBetApi.Enums;
 
-namespace SprintBet.Dtos
+namespace SprintBetApi.Dtos
 {
     /// <summary>
     ///     Voter class

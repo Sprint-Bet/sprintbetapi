@@ -1,7 +1,6 @@
-﻿using SprintBet.Enums;
-using System.ComponentModel.DataAnnotations;
+﻿using System.ComponentModel.DataAnnotations;
 
-namespace SprintBet.Dtos
+namespace SprintBetApi.Dtos
 {
     public class NewRoomDto
     {
@@ -9,6 +8,6 @@ namespace SprintBet.Dtos
         ///     Key to determine which items the room should use
         /// </summary>
         [Required]
-        public RoomType ItemsType { get; set; }
+        public string ItemsType { get; set; }
     }
 }

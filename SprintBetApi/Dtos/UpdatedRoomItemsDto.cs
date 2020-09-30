@@ -1,4 +1,4 @@
-﻿using SprintBet.Enums;
+﻿using SprintBetApi.Enums;
 using System.ComponentModel.DataAnnotations;
 
 namespace SprintBetApi.Dtos

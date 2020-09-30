@@ -1,7 +1,7 @@
 ﻿using System.ComponentModel.DataAnnotations;
-using SprintBet.Enums;
+using SprintBetApi.Enums;
 
-namespace SprintBet.Dtos
+namespace SprintBetApi.Dtos
 {
     public class UpdatedRoleDto
     {

@@ -1,8 +1,8 @@
 ﻿using System.Collections.Generic;
-using SprintBet.Dtos;
-using SprintBet.Enums;
+using SprintBetApi.Enums;
+using SprintBetApi.Dtos;
 
-namespace SprintBet.Services
+namespace SprintBetApi.Services
 {
     /// <summary>
     ///     Interface for RoomService that interacts directy with stored rooms
@@ -23,7 +23,7 @@ namespace SprintBet.Services
         public Room GetRoomById(string id);
 
         /// <summary>
-        ///     Add a new room
+        ///      Add a new room
         /// </summary>
         /// <param name="roomType"></param>
         /// <returns>The newly created room</returns>

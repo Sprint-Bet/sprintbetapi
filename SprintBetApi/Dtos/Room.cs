@@ -1,6 +1,6 @@
 ﻿using System.Collections.Generic;
 
-namespace SprintBet.Dtos
+namespace SprintBetApi.Dtos
 {
     public class Room
     {
