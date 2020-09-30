@@ -1,8 +1,8 @@
-﻿using SprintBet.Dtos;
+﻿using SprintBetApi.Dtos;
 using System.Collections.Generic;
 using System.Threading.Tasks;
 
-namespace SprintBet.Hubs
+namespace SprintBetApi.Hubs
 {
     public interface IVoteHub
     {

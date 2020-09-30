@@ -1,5 +1,5 @@
 ﻿using Microsoft.AspNetCore.Mvc.Filters;
-using SprintBet.Services;
+using SprintBetApi.Services;
 
 namespace SprintBetApi.Attributes
 {

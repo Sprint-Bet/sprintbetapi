@@ -1,7 +1,7 @@
-﻿using SprintBet.Enums;
+﻿using SprintBetApi.Enums;
 using System.ComponentModel.DataAnnotations;
 
-namespace SprintBet.Dtos
+namespace SprintBetApi.Dtos
 {
     public class NewRoomDto
     {

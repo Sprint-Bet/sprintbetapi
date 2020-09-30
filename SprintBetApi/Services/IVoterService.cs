@@ -1,7 +1,7 @@
 ﻿using System.Collections.Generic;
-using SprintBet.Dtos;
+using SprintBetApi.Dtos;
 
-namespace SprintBet.Services
+namespace SprintBetApi.Services
 {
     /// <summary>
     ///     Interface for VoterService that interacts directy with stored voters
