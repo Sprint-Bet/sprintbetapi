@@ -76,8 +76,10 @@ namespace SprintBetApi.Controllers
             await _hubContext.Groups.AddToGroupAsync(newVoterDto.ConnectionId, newVoter.Room.Id);
             await _hubContext.Clients.Group(newVoter.Room.Id).VotingUpdated(_voterService.GetVotersByRoomId(newVoter.Room.Id));
 
+            var token = _authService.GenerateToken(newVoter.Id, newVoter.Room.Id);
+
             var resourcePath = GetBaseUri(Request, $"voters/{newVoter.Id}").ToString();
-            return Created(resourcePath, newVoter);
+            return Created(resourcePath, new { Voter = newVoter, Token = token });
         }
 
         [HttpGet("{voterId}/reconnect")]
