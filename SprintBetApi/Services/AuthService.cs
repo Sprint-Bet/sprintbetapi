@@ -13,11 +13,11 @@ namespace SprintBetApi.Services
         /// <inheritdoc/>
         public string GenerateToken(AuthenticateVoterDto authenticateVoterDto)
         {
-			var mySecret = "I am the most absolute unit of all time and i can't believe it it's absolutely crazy i swear";
+			var mySecret = "placeholder secret";
 			var mySecurityKey = new SymmetricSecurityKey(Encoding.ASCII.GetBytes(mySecret));
 
-			var myIssuer = "https://localhost:5001";
-			var myAudience = "http://localhost:8888";
+			var myIssuer = "https://sprintbetapi.herokuapp.com/";
+			var myAudience = "https://sprintbet.herokuapp.com/";
 
 			var tokenHandler = new JwtSecurityTokenHandler();
 			var tokenDescriptor = new SecurityTokenDescriptor
