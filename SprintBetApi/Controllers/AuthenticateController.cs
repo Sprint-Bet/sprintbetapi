@@ -23,7 +23,7 @@ namespace SprintBetApi.Controllers
                 return BadRequest(ModelState);
             }
 
-            var token = _authService.GenerateToken(authenticateVoterDto);
+            var token = _authService.GenerateToken(authenticateVoterDto.Id, authenticateVoterDto.RoomId);
             return Ok(token);
         }
     }
