@@ -1,5 +1,4 @@
 ﻿using Microsoft.IdentityModel.Tokens;
-using SprintBetApi.Constants;
 using System;
 using System.IdentityModel.Tokens.Jwt;
 using System.Security.Claims;
@@ -17,11 +16,11 @@ namespace SprintBetApi.Services
 			var mySecurityKey = new SymmetricSecurityKey(Encoding.ASCII.GetBytes(mySecret));
 
 			var tokenDescriptor = new SecurityTokenDescriptor
-			{
+            {
 				Subject = new ClaimsIdentity(new Claim[]
 				{
 					new Claim(ClaimTypes.NameIdentifier, voterId),
-					new Claim(CustomClaims.RoomId, roomId)
+					new Claim(Constants.Constants.RoomId, roomId)
 				}),
 				Expires = DateTime.UtcNow.AddHours(4),
 				Issuer = "https://sprintbetapi.herokuapp.com/",
@@ -32,6 +31,14 @@ namespace SprintBetApi.Services
 			var tokenHandler = new JwtSecurityTokenHandler();
 			var token = tokenHandler.CreateToken(tokenDescriptor);
 			return tokenHandler.WriteToken(token);
+		}
+
+		/// <inheritdoc/>
+		public JwtSecurityToken ReadToken(string authHeader)
+        {
+			var token = authHeader.Replace("Bearer ", "");
+			var tokenHandler = new JwtSecurityTokenHandler();
+			return tokenHandler.ReadJwtToken(token);
 		}
     }
 }

@@ -7,6 +7,8 @@ using SprintBetApi.Dtos;
 using SprintBetApi.Hubs;
 using SprintBetApi.Services;
 using SprintBetApi.Attributes;
+using Microsoft.AspNetCore.Authorization;
+using SprintBetApi.Constants;
 
 namespace SprintBetApi.Controllers
 {
@@ -106,6 +108,7 @@ namespace SprintBetApi.Controllers
 
         [HttpPut("{voterId}/point")]
         [TypeFilter(typeof(ValidateVoter))]
+        [Authorize(Policy = "VoterIdMatchesRequestPolicy")]
         public async Task<IActionResult> CastVote([FromRoute] string voterId, [FromBody] UpdatedVoteDto updatedVoteDto)
         {
             if (!ModelState.IsValid)
