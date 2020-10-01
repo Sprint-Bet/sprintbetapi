@@ -10,8 +10,9 @@ namespace SprintBetApi.Services
         /// <summary>
         ///     Generate jwt token
         /// </summary>
-        /// <param name="userId"></param>
+        /// <param name="voterId"></param>
+        /// <param name="roomId"></param>
         /// <returns></returns>
-        public string GenerateToken(AuthenticateVoterDto userId);
+        public string GenerateToken(string voterId, string roomId);
     }
 }
