@@ -4,7 +4,6 @@ using Microsoft.Net.Http.Headers;
 using SprintBetApi.Auth.Requirements;
 using SprintBetApi.Services;
 using System.Linq;
-using System.Security.Claims;
 using System.Threading.Tasks;
 
 namespace SprintBetApi.Auth.Handlers
@@ -34,8 +33,8 @@ namespace SprintBetApi.Auth.Handlers
             }
 
             var token = _authService.ReadToken(authHeader);
-            var voterIdFromToken = token.Claims.First(claim => claim.Type == ClaimTypes.NameIdentifier).ToString();
-            if (voterIdFromRoute == voterIdFromToken)
+            var voterIdClaim = token.Claims.First(claim => claim.Type == Constants.Constants.VoterIdClaimType);
+            if (voterIdFromRoute == voterIdClaim.Value)
             {
                 context.Succeed(requirement);
             }
