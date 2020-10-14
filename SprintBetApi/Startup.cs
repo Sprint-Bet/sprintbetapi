@@ -1,14 +1,19 @@
-﻿using Microsoft.AspNetCore.Builder;
+﻿using Microsoft.AspNetCore.Authentication.Cookies;
+using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
+using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.Mvc.Infrastructure;
+using Microsoft.AspNetCore.Server.IISIntegration;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
+using SprintBetApi.Auth.Handlers;
 using SprintBetApi.Auth.Requirements;
 using SprintBetApi.Constants;
 using SprintBetApi.Hubs;
 using SprintBetApi.Services;
-using System.Security.Claims;
 
 namespace SprintBet
 {
@@ -44,10 +49,15 @@ namespace SprintBet
             services.AddSingleton<IRoomService, RoomService>();
             services.AddSingleton<IAuthService, AuthService>();
 
+            services.AddSingleton<IActionContextAccessor, ActionContextAccessor>();
+
             services.AddAuthorization(options => {
-                options.AddPolicy(Constants.VoterHasIdClaimTypePolicy, policy => policy.RequireClaim(ClaimTypes.NameIdentifier));
-                options.AddPolicy(Constants.VoterIdMatchesRequestPolicy, policy => policy.Requirements.Add(new VoterIdMatchesRequestRequirement()));
+                options.AddPolicy(Constants.VoterIdMatchesRequestPolicy, policy => {
+                    policy.Requirements.Add(new VoterIdMatchesRequestRequirement());
+                });
             });
+
+            services.AddSingleton<IAuthorizationHandler, VoterIdMatchesRequestHandler>();
 
             services.AddMvc(option =>
             {

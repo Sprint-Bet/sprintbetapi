@@ -19,8 +19,8 @@ namespace SprintBetApi.Services
             {
 				Subject = new ClaimsIdentity(new Claim[]
 				{
-					new Claim(ClaimTypes.NameIdentifier, voterId),
-					new Claim(Constants.Constants.RoomId, roomId)
+					new Claim(Constants.Constants.VoterIdClaimType, voterId),
+					new Claim(Constants.Constants.RoomIdClaimType, roomId)
 				}),
 				Expires = DateTime.UtcNow.AddHours(4),
 				Issuer = "https://sprintbetapi.herokuapp.com/",

@@ -6,14 +6,14 @@
     public static class Constants
     {
         /// <summary>
-        ///     Custom claim name for the room id
+        ///     Custom claim type for the voter id
         /// </summary>
-        public const string RoomId = "roomId";
+        public const string VoterIdClaimType = "voterId";
 
         /// <summary>
-        ///     Auth policy name for whether voter id claim exists
+        ///     Custom claim type for the room id
         /// </summary>
-        public const string VoterHasIdClaimTypePolicy = "VoterHasIdClaimTypePolicy";
+        public const string RoomIdClaimType = "roomId";
 
         /// <summary>
         ///     Auth policy name for matching voter ids

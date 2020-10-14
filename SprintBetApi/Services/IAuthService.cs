@@ -1,5 +1,4 @@
-﻿using SprintBetApi.Dtos;
-using System.IdentityModel.Tokens.Jwt;
+﻿using System.IdentityModel.Tokens.Jwt;
 
 namespace SprintBetApi.Services
 {
