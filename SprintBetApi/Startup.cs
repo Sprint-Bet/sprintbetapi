@@ -51,8 +51,10 @@ namespace SprintBet
 
             services.AddSingleton<IActionContextAccessor, ActionContextAccessor>();
 
-            services.AddAuthorization(options => {
-                options.AddPolicy(Constants.VoterIdMatchesRequestPolicy, policy => {
+            services.AddAuthorization(options =>
+            {
+                options.AddPolicy(Constants.VoterIdMatchesRequestPolicy, policy =>
+                {
                     policy.Requirements.Add(new VoterIdMatchesRequestRequirement());
                 });
             });
