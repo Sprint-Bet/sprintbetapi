@@ -1,4 +1,6 @@
-﻿using Microsoft.IdentityModel.Tokens;
+﻿using Microsoft.Extensions.Options;
+using Microsoft.IdentityModel.Tokens;
+using SprintBetApi.Auth;
 using System;
 using System.IdentityModel.Tokens.Jwt;
 using System.Security.Claims;
@@ -9,10 +11,17 @@ namespace SprintBetApi.Services
     /// <inheritdoc/>
     public class AuthService : IAuthService
     {
+		private readonly JwtConfig _jwtConfig;
+
+		public AuthService(IOptions<JwtConfig> jwtConfig)
+        {
+			_jwtConfig = jwtConfig.Value ?? throw new ArgumentException(nameof(jwtConfig));
+        }
+
         /// <inheritdoc/>
         public string GenerateToken(string voterId, string roomId)
         {
-			var mySecret = "placeholder secret";
+			var mySecret = _jwtConfig.JwtSecret;
 			var mySecurityKey = new SymmetricSecurityKey(Encoding.ASCII.GetBytes(mySecret));
 
 			var tokenDescriptor = new SecurityTokenDescriptor
