@@ -1,14 +1,13 @@
-﻿using System;
-using System.Linq;
-using System.Threading.Tasks;
+﻿using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.SignalR;
+using SprintBetApi.Attributes;
 using SprintBetApi.Dtos;
 using SprintBetApi.Hubs;
 using SprintBetApi.Services;
-using SprintBetApi.Attributes;
-using Microsoft.AspNetCore.Authorization;
-using SprintBetApi.Constants;
+using System;
+using System.Linq;
+using System.Threading.Tasks;
 
 namespace SprintBetApi.Controllers
 {
@@ -135,6 +134,7 @@ namespace SprintBetApi.Controllers
 
         [HttpPut("{voterId}/role")]
         [TypeFilter(typeof(ValidateVoter))]
+        [Authorize(Policy = Constants.Constants.VoterIdMatchesRequestPolicy)]
         public async Task<IActionResult> ChangeRole([FromRoute] string voterId, [FromBody] UpdatedRoleDto updatedRoleDto)
         {
             if (!ModelState.IsValid)
@@ -155,6 +155,7 @@ namespace SprintBetApi.Controllers
 
         [HttpDelete("{voterId}")]
         [TypeFilter(typeof(ValidateVoter))]
+        [Authorize(Policy = Constants.Constants.VoterIdMatchesRequestPolicy)]
         public async Task<IActionResult> RemoveVoter([FromRoute] string voterId, [FromHeader] string connectionId)
         {
             if (!ModelState.IsValid)
