@@ -19,5 +19,10 @@
         ///     Auth policy name for matching voter ids
         /// </summary>
         public const string VoterIdMatchesRequestPolicy = "VoterIdMatchesRequestPolicy";
+
+        /// <summary>
+        ///     Auth policy name for matching the voters id to id of the room's dealerId
+        /// </summary>
+        public const string DealerIdMatchesRequestPolicy = "DealerIdMatchesRequestPolicy";
     }
 }

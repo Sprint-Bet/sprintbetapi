@@ -57,9 +57,14 @@ namespace SprintBet
                 {
                     policy.Requirements.Add(new VoterIdMatchesRequestRequirement());
                 });
+                options.AddPolicy(Constants.DealerIdMatchesRequestPolicy, policy =>
+                {
+                    policy.Requirements.Add(new DealerIdMatchesRequestRequirement());
+                });
             });
 
             services.AddSingleton<IAuthorizationHandler, VoterIdMatchesRequestHandler>();
+            services.AddSingleton<IAuthorizationHandler, DealerIdMatchesRequestHandler>();
 
             services.AddMvc(option =>
             {
