@@ -6,6 +6,7 @@ using SprintBetApi.Dtos;
 using SprintBetApi.Hubs;
 using SprintBetApi.Services;
 using SprintBetApi.Attributes;
+using Microsoft.AspNetCore.Authorization;
 
 namespace SprintBetApi.Controllers
 {
@@ -66,6 +67,7 @@ namespace SprintBetApi.Controllers
 
         [HttpPut("{roomId}/locked")]
         [TypeFilter(typeof(ValidateRoom))]
+        [Authorize(Policy = Constants.Constants.DealerIdMatchesRequestPolicy)]
         public async Task<IActionResult> LockVoting([FromRoute] string roomId, [FromBody] UpdatedRoomLockedDto updatedRoomLockedDto)
         {
             if (!ModelState.IsValid)
@@ -93,6 +95,7 @@ namespace SprintBetApi.Controllers
 
         [HttpPut("{roomId}/items")]
         [TypeFilter(typeof(ValidateRoom))]
+        [Authorize(Policy = Constants.Constants.DealerIdMatchesRequestPolicy)]
         public async Task<IActionResult> ChangeItems([FromRoute] string roomId, [FromBody] UpdatedRoomItemsDto updatedRoomItemsDto)
         {
             if (!ModelState.IsValid)
@@ -119,6 +122,7 @@ namespace SprintBetApi.Controllers
 
         [HttpDelete("{roomId}")]
         [TypeFilter(typeof(ValidateRoom))]
+        [Authorize(Policy = Constants.Constants.DealerIdMatchesRequestPolicy)]
         public IActionResult FinishGame([FromRoute] string roomId)
         {
             if (!ModelState.IsValid)

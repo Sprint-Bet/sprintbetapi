@@ -1,9 +1,15 @@
-﻿using Microsoft.AspNetCore.Builder;
+﻿using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.Mvc.Infrastructure;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
+using SprintBetApi.Auth;
+using SprintBetApi.Auth.Handlers;
+using SprintBetApi.Auth.Requirements;
+using SprintBetApi.Constants;
 using SprintBetApi.Hubs;
 using SprintBetApi.Services;
 
@@ -21,6 +27,8 @@ namespace SprintBet
         // This method gets called by the runtime. Use this method to add services to the container.
         public void ConfigureServices(IServiceCollection services)
         {
+            services.Configure<JwtConfig>(Configuration.GetSection("JwtConfig"));
+
             services.AddCors(options =>
             {
                 options.AddPolicy("CorsPolicy", builder =>
@@ -40,6 +48,23 @@ namespace SprintBet
             services.AddSingleton<IVoterService, VoterService>();
             services.AddSingleton<IRoomService, RoomService>();
             services.AddSingleton<IAuthService, AuthService>();
+
+            services.AddSingleton<IActionContextAccessor, ActionContextAccessor>();
+
+            services.AddAuthorization(options =>
+            {
+                options.AddPolicy(Constants.VoterIdMatchesRequestPolicy, policy =>
+                {
+                    policy.Requirements.Add(new VoterIdMatchesRequestRequirement());
+                });
+                options.AddPolicy(Constants.DealerIdMatchesRequestPolicy, policy =>
+                {
+                    policy.Requirements.Add(new DealerIdMatchesRequestRequirement());
+                });
+            });
+
+            services.AddSingleton<IAuthorizationHandler, VoterIdMatchesRequestHandler>();
+            services.AddSingleton<IAuthorizationHandler, DealerIdMatchesRequestHandler>();
 
             services.AddMvc(option =>
             {
