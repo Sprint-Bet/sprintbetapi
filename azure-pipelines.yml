@@ -11,7 +11,7 @@ resources:
     ref: refs/tags/v1.36
 
 variables:
-- template: variables.yml
+- template: azure-pipelines-variables.yml
 
 # TODO: will it fail if there's no tests? 
 stages:
