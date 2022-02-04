@@ -1,0 +1,116 @@
+trigger:
+  branches:
+    include:
+    - main
+
+resources:
+  repositories:
+  - repository: adoTemplatesAzure
+    type: git
+    name: Into.Infrastructure/Into.Ado.Templates
+    ref: refs/tags/v1.36
+
+variables:
+- template: variables.yml
+
+# TODO: will it fail if there's no tests? 
+stages:
+- template: /templates/pipeline/stages/tmpl-pipeline-dotnet-build-test-lint.yml@adoTemplatesAzure
+  parameters:
+    name: 'DotNetBuildTestLint'
+    display_name: 'Run .Net Build, Test and SonarCloud analysis'
+    path_to_solution: ${{ variables.solution }}
+    feeds_to_use: 'select'
+    feed: '${{ variables.nuget_feed }}'
+    agent_pool: '${{ variables.agent_pool }}'
+    build_arguments: '--configuration ${{ variables.build_configuration }}'
+    project_key: '${{ variables.sonarcloud_project_key }}'
+    project_name: '${{ variables.sonarcloud_project_name }}'
+    test_arguments: ${{ '$(test_arguments) --filter "FullyQualifiedName~.Tests.|Category=InMemory|Category=AfterDeployment"' }}
+    test_env_variables:
+      TestRunId : $(Build.BuildNumber)
+      RunInMemory: true
+      ASPNETCORE_ENVIRONMENT: 'Test'
+
+- stage: DockerBuildStaging
+  displayName: 'Build Staging Docker Image'
+  dependsOn:
+    - DotNetBuildTestLint
+  jobs:
+  - template: /templates/pipeline/jobs/tmpl-pipeline-docker-build-push.yml@adoTemplatesAzure
+    parameters:
+      #name: DockerBuildPush - this is a readonly property however please leave this here for readibility purposes
+      display_name: 'Build and Push Docker Image'
+      agent_pool: '${{ variables.agent_pool }}'
+      docker_registry_service_connection_name: '${{ variables.staging_docker_registry_service_connection_name }}'
+      docker_repository_name: '${{ variables.docker_repository_name }}'
+      docker_file_path: '${{ variables.dockerfile_path }}'
+
+- stage: DeployToStaging
+  dependsOn:
+    - DockerBuildStaging
+  displayName: 'Deploy Manifests to Staging Environment'
+  variables:
+  - group: ApplicationFormService-Secrets-Staging
+  jobs:
+  - template: /templates/pipeline/jobs/tmpl-pipeline-k8s-setup-app-secrets.yml@adoTemplatesAzure
+    parameters:
+      name: SetupAppSecrets
+      agent_pool: ${{ variables.agent_pool }}
+      secretType: generic
+      secretName: application-form-service-secrets
+      secretArguments: --from-literal=CosmosDbPrimaryKey=$(CosmosDbPrimaryKey) --from-literal=EventGridAccessKey=$(EventGridAccessKey)
+      kubernetesServiceConnection: ${{ variables.staging_kubernetes_service_connection_name }}
+      namespace: ${{ variables.namespace }}
+  - template: /templates/pipeline/jobs/tmpl-pipeline-k8s-deploy-v2.yml@adoTemplatesAzure
+    parameters:
+      name: DeployToStaging
+      display_name: 'Deploy To Staging Environment'
+      agent_pool: '${{ variables.agent_pool }}'
+      docker_registry_service_connection_name: '${{ variables.staging_docker_registry_service_connection_name }}'
+      docker_registry_url: '${{ variables.staging_docker_registry_url }}'
+      docker_repository_name: '${{ variables.docker_repository_name }}'
+      deployment_environment: '${{ variables.staging_deployment_environment }}'
+      kubernetes_service_connection_name: '${{ variables.staging_kubernetes_service_connection_name }}'
+      artifact_name: 'staging_manifests'
+      manifest_file_name: '${{ variables.staging_manifest_file_name }}'
+      manifest_path: ${{ variables.manifests_path }}
+      namespace: ${{ variables.namespace }}
+      aks_deployment_name: ${{ variables.aks_deployment_name }}
+      url: '${{ variables.staging_subdomain }}.${{ variables.staging_domain }}'
+
+# TODO: will it fail if there's no tests?
+# - stage: DockerBuildProduction
+#   displayName: 'Build Production Docker Image'
+#   dependsOn: DotNetBuildTestLint
+#   jobs:
+#   - template: /templates/pipeline/jobs/tmpl-pipeline-docker-build-push.yml@adoTemplatesAzure
+#     parameters:
+#       #name: DockerBuildPush - this is a readonly property however please leave this here for readibility purposes
+#       display_name: 'Build and Push Docker Image to Azure Enterprise Subscription'
+#       agent_pool: '${{ variables.agent_pool }}'
+#       docker_registry_service_connection_name: '${{ variables.production_docker_registry_service_connection_name }}'
+#       docker_repository_name: '${{ variables.docker_repository_name }}'
+#       docker_file_path: '${{ variables.dockerfile_path }}'
+
+# - stage: DeployToProduction
+#   displayName: 'Deploy to Production'
+#   dependsOn:
+#   - DockerBuildProduction
+#   jobs:
+#    - template: /templates/pipeline/jobs/tmpl-pipeline-k8s-deploy-v2.yml@adoTemplatesAzure
+#      parameters:
+#        name: DeployToProductionNEU
+#        display_name: 'Deploy To Production Environment'
+#        agent_pool: '${{ variables.agent_pool }}'
+#        docker_registry_service_connection_name: '${{ variables.production_docker_registry_service_connection_name }}'
+#        docker_registry_url: '${{ variables.production_docker_registry_url }}'
+#        docker_repository_name: '${{ variables.docker_repository_name }}'
+#        deployment_environment: '${{ variables.production_neu_deployment_environment }}'
+#        kubernetes_service_connection_name: '${{ variables.production_neu_kubernetes_service_connection_name }}'
+#        manifest_path: '${{ variables.manifests_path }}'
+#        manifest_file_name: '${{ variables.production_manifest_file_name }}'
+#        aks_deployment_name: '${{ variables.aks_deployment_name }}'
+#        namespace: '${{ variables.namespace }}'
+#        url: '${{ variables.subdomain }}.${{ variables.production_domain }}'
+#        artifact_name: 'manifest-prod-neu'
