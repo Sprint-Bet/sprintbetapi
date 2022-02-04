@@ -5,7 +5,7 @@ variables:
   agent_pool: ubuntu-latest
   docker_repository_name: 'sprintbet-api'
   aks_deployment_name: 'sprintbet-api'
-  namespace: 'sprintbet'
+  namespace: 'into-tooling'
   subdomain: 'sprintbet-api'
   sonarcloud_project_key: 'SprintBet.SprintBetApi'
   sonarcloud_project_name: 'SprintBet.SprintBetApi'
