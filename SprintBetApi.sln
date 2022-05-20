@@ -5,6 +5,17 @@ VisualStudioVersion = 15.0.28307.902
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SprintBetApi", "SprintBetApi\SprintBetApi.csproj", "{DA0F290F-E701-4124-A2FC-469F08082E4B}"
 EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Pipelines", "Pipelines", "{8BCCB01D-D993-4AEF-B8A1-94C47F80FC7C}"
+	ProjectSection(SolutionItems) = preProject
+		azure-pipelines-deployment.yml = azure-pipelines-deployment.yml
+	EndProjectSection
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Templates", "Templates", "{3B9CC1FC-D7ED-46D9-B18A-D42B59A44068}"
+	ProjectSection(SolutionItems) = preProject
+		Templates\tmpl-create-image.yml = Templates\tmpl-create-image.yml
+		Templates\tmpl-variables.yml = Templates\tmpl-variables.yml
+	EndProjectSection
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -21,5 +32,8 @@ Global
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {5C464262-A29F-4CEB-89C7-874F7725FA62}
+	EndGlobalSection
+	GlobalSection(NestedProjects) = preSolution
+		{3B9CC1FC-D7ED-46D9-B18A-D42B59A44068} = {8BCCB01D-D993-4AEF-B8A1-94C47F80FC7C}
 	EndGlobalSection
 EndGlobal
