@@ -30,7 +30,7 @@ namespace SprintBet
                           .WithOrigins("https://sprintbet.herokuapp.com",
                               "https://sprintbet-staging.herokuapp.com",
                               "https://localhost:8888",
-                              "http://localhost:8888",
+                              "http://localhost:8080",
                               "https://sprintbet.intoglobal.com")
                           .AllowCredentials();
               });
@@ -47,14 +47,19 @@ namespace SprintBet
       }).SetCompatibilityVersion(CompatibilityVersion.Version_3_0);
 
       services.AddControllers().AddNewtonsoftJson();
+      services.AddHealthChecks();
     }
 
     // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
     public void Configure(IApplicationBuilder app, IWebHostEnvironment env)
     {
-      app.UseCors("CorsPolicy");
-      app.UseRouting();
-      app.UseEndpoints(endpoints => endpoints.MapHub<VoteHub>("/voteHub"));
+        app.UseCors("CorsPolicy");
+        app.UseRouting();
+        app.UseEndpoints(endpoints =>
+        {
+            endpoints.MapHealthChecks("/health");
+            endpoints.MapHub<VoteHub>("/voteHub");
+        });
 
       if (env.IsDevelopment())
       {
