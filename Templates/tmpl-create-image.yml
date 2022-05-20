@@ -1,19 +1,19 @@
 parameters:
 - name: name
-    type: string
+  type: string
 
 - name: display_name
-    type: string
+  type: string
 
 - name: depends_on
-    type: object
-    default: []
+  type: object
+  default: []
 
 - name: environment
-    type: string
+  type: string
 
 - name: region
-    type: string
+  type: string
 
 stages:
   - stage: ${{ parameters.name }}
