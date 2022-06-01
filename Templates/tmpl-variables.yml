@@ -55,7 +55,8 @@
   azurerm_service_connection_transient: "DigitalSystems Dev/Test"
 
   # Domains
-  domain_transient: sprintbet-api.tooling-test-intofuture.co.uk
+  domain_transient: sprintbet-api.test-intofuture.co.uk
   domain_preprod: preprod-sprintbet-api.partnerportal.intoglobal.com
   domain_production: sprintbet-api.partnerportal.intoglobal.com
-  domain_staging: sprintbet-api.tooling-staging-intofuture.co.uk
+  domain_staging: sprintbet-api.staging-intofuture.co.uk
+  
