@@ -25,6 +25,7 @@ stages:
           name: BuildPush${{ parameters.environment }}${{ parameters.region }}
           display_name: 'Build and Push ${{ parameters.environment }} ${{ parameters.region }} Docker Image'
           agent_pool: $(agent_pool)
-          docker_registry_service_connection_name: $(docker_registry_service_connection_name_${{ parameters.environment }}_${{ parameters.region }})
+          #docker_registry_service_connection_name: $(docker_registry_service_connection_name_${{ parameters.environment }}_${{ parameters.region }})
+          docker_registry_service_connection_name: ${{docker_registry_service_connection_name_staging_NEU}}
           docker_repository_name: $(docker_repository_name)
           docker_file_path: $(System.DefaultWorkingDirectory)/SprintBetApi/Dockerfile
