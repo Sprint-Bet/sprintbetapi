@@ -10,6 +10,9 @@ resources:
     name: Into.Infrastructure/Into.Ado.Templates
     ref: main
 
+variables:
+- template: /Templates/tmpl-variables.yml
+
 stages:
   # - template: /templates/tmpl-create-image.yml
   #   parameters:

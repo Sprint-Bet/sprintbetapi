@@ -15,9 +15,6 @@ parameters:
 - name: region
   type: string
 
-variables:
-- template: tmpl-variables.yml
-
 stages:
   - stage: ${{ parameters.name }}
     displayName: ${{ parameters.display_name }}
