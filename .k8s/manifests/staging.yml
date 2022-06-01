@@ -2,7 +2,7 @@ apiVersion: apps/v1
 kind: Deployment
 metadata:
   name: __SERVICE_NAME__-deployment
-  namespace: __NAMESPACE__
+  namespace: into-discovery
   labels:
     app: __SERVICE_NAME__
 spec:
@@ -12,33 +12,16 @@ spec:
       app: __SERVICE_NAME__
   template:
     metadata:
-      namespace: __NAMESPACE__
+      namespace: into-discovery
       labels:
         app: __SERVICE_NAME__
     spec:
-      imagePullSecrets:
-      - name: docker-registry-connection-secret
       containers:
       - name: __SERVICE_NAME__
         image: __DOCKER_REGISTRY_URL__/__DOCKER_IMAGE_NAME__:__DOCKER_IMAGE_TAG__
         env:
         - name: 'ASPNETCORE_ENVIRONMENT'
           value: 'Staging'
-        - name: __COSMOS_DB_KEY_APP_SETTING_NAME__
-          valueFrom:
-            secretKeyRef:
-              name: 'application-form-service-secrets'
-              key: 'CosmosDbPrimaryKey'
-        - name: __COSMOS_DB_KEY_LEGACY_APP_SETTING_NAME__
-          valueFrom:
-            secretKeyRef:
-              name: 'application-form-service-secrets'
-              key: 'CosmosDbPrimaryKey'
-        - name: __EVENT_GRID_ACCESS_KEY_APP_SETTING_NAME__
-          valueFrom:
-            secretKeyRef:
-              name: 'application-form-service-secrets'
-              key: 'EventGridAccessKey'
         resources:
           requests:
             cpu: 100m
@@ -48,12 +31,13 @@ spec:
             memory: 256Mi
         ports:
         - containerPort: 80
-        readinessProbe: 
-          httpGet: 
-            path: /welcome
+        readinessProbe:
+          httpGet:
+            path: /health
             port: 80
           periodSeconds: 3
           timeoutSeconds: 1
+
 ---
 apiVersion: v1
 kind: Service
@@ -67,6 +51,7 @@ spec:
   - protocol: TCP
     port: 80
     targetPort: 80
+
 ---
 apiVersion: networking.k8s.io/v1
 kind: Ingress
@@ -80,7 +65,7 @@ metadata:
 spec:
   tls:
   - hosts:
-      - __URL__
+    - __URL__
     secretName: __SERVICE_NAME__-secret
   rules:
   - host: __URL__
