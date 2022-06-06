@@ -9,73 +9,73 @@ using SprintBetApi.Services;
 
 namespace SprintBet
 {
-  public class Startup
-  {
-    public Startup(IConfiguration configuration)
+    public class Startup
     {
-      Configuration = configuration;
-    }
+        public IConfiguration Configuration { get; }
 
-    public IConfiguration Configuration { get; }
-
-    // This method gets called by the runtime. Use this method to add services to the container.
-    public void ConfigureServices(IServiceCollection services)
-    {
-      services.AddCors(options =>
-      {
-        options.AddPolicy("CorsPolicy", builder =>
-              {
-                builder.AllowAnyMethod()
-                          .AllowAnyHeader()
-                          .WithOrigins("https://sprintbet.herokuapp.com",
-                              "https://sprintbet-staging.herokuapp.com",
-                              "https://localhost:8888",
-                              "http://localhost:8080",
-                              "https://sprintbet.intoglobal.com")
-                          .AllowCredentials();
-              });
-      });
-
-      services.AddSignalR();
-
-      services.AddSingleton<IVoterService, VoterService>();
-      services.AddSingleton<IRoomService, RoomService>();
-
-      services.AddMvc(option =>
-      {
-        option.EnableEndpointRouting = false;
-      }).SetCompatibilityVersion(CompatibilityVersion.Version_3_0);
-
-      services.AddControllers().AddNewtonsoftJson();
-      services.AddHealthChecks();
-
-      services.AddApplicationInsightsTelemetry(Configuration);
-    }
-
-    // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
-    public void Configure(IApplicationBuilder app, IWebHostEnvironment env)
-    {
-        app.UseCors("CorsPolicy");
-        app.UseRouting();
-        app.UseEndpoints(endpoints =>
+        public Startup(IConfiguration configuration)
         {
-            endpoints.MapHealthChecks("/health");
-            endpoints.MapHub<VoteHub>("/voteHub");
-        });
+            Configuration = configuration;
+        }
 
-      if (env.IsDevelopment())
-      {
-        app.UseDeveloperExceptionPage();
-      }
-      else
-      {
-        // The default HSTS value is 30 days. You may want to change this for production scenarios, see https://aka.ms/aspnetcore-hsts.
-        app.UseHsts();
-      }
+        // This method gets called by the runtime. Use this method to add services to the container.
+        public void ConfigureServices(IServiceCollection services)
+        {
+            services.AddCors(options =>
+            {
+                options.AddPolicy("CorsPolicy", builder =>
+                {
+                        builder.AllowAnyMethod()
+                            .AllowAnyHeader()
+                            .WithOrigins("https://sprintbet.herokuapp.com",
+                                "https://sprintbet-staging.herokuapp.com",
+                                "https://localhost:8888",
+                                "http://localhost:8080",
+                                "https://sprintbet.intoglobal.com")
+                            .AllowCredentials();
+                    });
+            });
 
-      app.UseHttpsRedirection();
+            services.AddSignalR();
 
-      app.UseMvc();
+            services.AddSingleton<IVoterService, VoterService>();
+            services.AddSingleton<IRoomService, RoomService>();
+
+            services.AddMvc(option =>
+            {
+                option.EnableEndpointRouting = false;
+            }).SetCompatibilityVersion(CompatibilityVersion.Version_3_0);
+
+            services.AddControllers().AddNewtonsoftJson();
+            services.AddHealthChecks();
+
+            services.AddApplicationInsightsTelemetry(Configuration);
+        }
+
+        // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
+        public void Configure(IApplicationBuilder app, IWebHostEnvironment env)
+        {
+            app.UseCors("CorsPolicy");
+            app.UseRouting();
+            app.UseEndpoints(endpoints =>
+            {
+                endpoints.MapHealthChecks("/health");
+                endpoints.MapHub<VoteHub>("/voteHub");
+            });
+
+            if (env.IsDevelopment())
+            {
+                app.UseDeveloperExceptionPage();
+            }
+            else
+            {
+                // The default HSTS value is 30 days. You may want to change this for production scenarios, see https://aka.ms/aspnetcore-hsts.
+                app.UseHsts();
+            }
+
+            app.UseHttpsRedirection();
+
+            app.UseMvc();
+        }
     }
-  }
 }
