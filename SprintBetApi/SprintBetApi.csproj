@@ -16,10 +16,12 @@
 
   <ItemGroup>
     <Folder Include="Services\" />
+    <Folder Include="Extensions\" />
   </ItemGroup>
   <ItemGroup>
     <None Remove="Microsoft.IdentityModel.Tokens" />
     <None Remove="System.IdentityModel.Tokens.Jwt" />
     <None Remove="Microsoft.ApplicationInsights.AspNetCore" />
+    <None Remove="Extensions\" />
   </ItemGroup>
 </Project>

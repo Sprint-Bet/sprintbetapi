@@ -4,6 +4,7 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
+using SprintBetApi.Extensions;
 using SprintBetApi.Hubs;
 using SprintBetApi.Services;
 
@@ -49,7 +50,7 @@ namespace SprintBet
             services.AddControllers().AddNewtonsoftJson();
             services.AddHealthChecks();
 
-            services.AddApplicationInsightsTelemetry(Configuration);
+            services.AddApplicationInsights(Configuration);
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
