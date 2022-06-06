@@ -31,7 +31,7 @@ namespace SprintBet
                                 "https://sprintbet-staging.herokuapp.com",
                                 "https://localhost:8888",
                                 "http://localhost:8080",
-                                "https://sprintbet.intoglobal.com")
+                                "https://sprintbet.staging-intofuture.co.uk")
                             .AllowCredentials();
                     });
             });
