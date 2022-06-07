@@ -50,6 +50,7 @@ namespace SprintBet
             services.AddControllers().AddNewtonsoftJson();
             services.AddHealthChecks();
 
+            // TODO: create and use staging AIN resource
             services.AddApplicationInsights(Configuration);
         }
 
