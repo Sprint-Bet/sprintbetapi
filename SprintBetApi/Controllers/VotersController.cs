@@ -91,6 +91,15 @@ namespace SprintBetApi.Controllers
       }
 
       var voter = _voterService.GetVoterById(voterId);
+      if (voter == null) {
+        return NotFound(new ErrorMessage("Could not find voter"));
+      }
+
+      var room = _roomService.GetRoomById(voter.Room.Id);
+      if (room == null) {
+        return NotFound(new ErrorMessage("Could not find room, or has already closed."));
+      }
+
       await _hubContext.Groups.AddToGroupAsync(connectionId, voter.Room.Id);
 
       return Ok(voter);
