@@ -28,15 +28,15 @@ stages:
       environment: staging
       region: NEU
 
-  - template: /Templates/tmpl-deploy-image.yml
-    parameters:
-      name: DeployToStaging
-      display_name: Deploy to Staging
-      depends_on: [ BuildDockerImageStaging ] 
-      environment: staging
-      region: NEU
-      manifest: $(manifest_file_name_staging)
-      image_tag: $(image_tag)
+  # - template: /Templates/tmpl-deploy-image.yml
+  #   parameters:
+  #     name: DeployToStaging
+  #     display_name: Deploy to Staging
+  #     depends_on: [ BuildDockerImageStaging ] 
+  #     environment: staging
+  #     region: NEU
+  #     manifest: $(manifest_file_name_staging)
+  #     image_tag: $(image_tag)
 
   # # move to separate file?
   # - stage: DeployToStaging
