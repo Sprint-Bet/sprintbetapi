@@ -2,7 +2,7 @@ apiVersion: apps/v1
 kind: Deployment
 metadata:
   name: __SERVICE_NAME__-deployment
-  namespace: into-discovery
+  namespace: into-tooling
   labels:
     app: __SERVICE_NAME__
 spec:
@@ -12,7 +12,7 @@ spec:
       app: __SERVICE_NAME__
   template:
     metadata:
-      namespace: into-discovery
+      namespace: into-tooling
       labels:
         app: __SERVICE_NAME__
     spec:

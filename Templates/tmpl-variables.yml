@@ -27,14 +27,14 @@
   docker_repository_name: into-tooling-sprintbet-api
 
   # Environments
-  deployment_environment_transient_NEU: Into-Discovery-NEU-Dev-Test
-  deployment_environment_staging_NEU: Into-Discovery-NEU-Dev-Test
-  deployment_environment_preprod_NEU: Into-Discovery-Prod-NorthEurope
-  deployment_environment_production_NEU: Into-Discovery-Prod-NorthEurope
+  deployment_environment_transient_NEU: into-tooling-NEU-Dev-Test
+  deployment_environment_staging_NEU: into-tooling-NEU-Dev-Test
+  deployment_environment_preprod_NEU: into-tooling-Prod-NorthEurope
+  deployment_environment_production_NEU: into-tooling-Prod-NorthEurope
 
   # k8s
   # TODO: move to into-tooling, at some point
-  namespace: into-discovery
+  namespace: into-tooling
 
   aks_deployment_name_transient: into-tooling-sprintbet-api-$(System.PullRequest.PullRequestId)
   aks_deployment_name_staging: into-tooling-sprintbet-api
@@ -46,10 +46,13 @@
   manifest_file_name_production_ROW: production.yml
 
   # AKS Service connections
-  kubernetes_service_connection_name_transient_NEU: Into-Discovery-DevTest-NorthEurope-AKS039
-  kubernetes_service_connection_name_staging_NEU: Into-Discovery-DevTest-NorthEurope-AKS039
-  kubernetes_service_connection_name_production_NEU: Into-Discovery-Prod-NorthEurope-AKS984
-  kubernetes_service_connection_name_preprod_NEU: Into-Discovery-Prod-NorthEurope-AKS984
+  kubernetes_service_connection_name_transient_NEU: Into-Tooling-DevTest-NorthEurope-AKS039
+  kubernetes_service_connection_name_staging_NEU: Into-Tooling-DevTest-NorthEurope-AKS039
+  kubernetes_service_connection_name_production_NEU: Into-Tooling-Prod-NorthEurope-AKS984
+  kubernetes_service_connection_name_preprod_NEU: Into-Tooling-Prod-NorthEurope-AKS984  # kubernetes_service_connection_name_transient_NEU: into-tooling-DevTest-NorthEurope-AKS039
+  # kubernetes_service_connection_name_staging_NEU: into-tooling-DevTest-NorthEurope-AKS039
+  # kubernetes_service_connection_name_production_NEU: into-tooling-Prod-NorthEurope-AKS984
+  # kubernetes_service_connection_name_preprod_NEU: into-tooling-Prod-NorthEurope-AKS984
 
   # App Gateways
   application_gateway_name_transient: AGWNEUTSTAKS039
