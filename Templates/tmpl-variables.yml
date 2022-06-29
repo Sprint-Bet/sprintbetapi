@@ -27,10 +27,10 @@
   docker_repository_name: into-tooling-sprintbet-api
 
   # Environments
-  deployment_environment_transient_NEU: into-tooling-NEU-Dev-Test
-  deployment_environment_staging_NEU: into-tooling-NEU-Dev-Test
-  deployment_environment_preprod_NEU: into-tooling-Prod-NorthEurope
-  deployment_environment_production_NEU: into-tooling-Prod-NorthEurope
+  deployment_environment_transient_NEU: Into-Tooling-NEU-Dev-Test
+  deployment_environment_staging_NEU: Into-Tooling-NEU-Dev-Test
+  deployment_environment_preprod_NEU: Into-Tooling-Prod-NorthEurope
+  deployment_environment_production_NEU: Into-Tooling-Prod-NorthEurope
 
   # k8s
   # TODO: move to into-tooling, at some point
