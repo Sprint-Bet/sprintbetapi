@@ -56,7 +56,8 @@ namespace SprintBetApi.Controllers
         return BadRequest(new ErrorMessage("Invalid connection id"));
       }
 
-      var newRoom = _roomService.AddRoom(newRoomDto.ItemsType);
+      var newRoom = _roomService.AddRoom(newRoomDto);
+
       await _hubContext.Groups.AddToGroupAsync(connectionId, newRoom.Id);
 
       return Created(GetBaseUri(Request, $"rooms/{newRoom.Id}").ToString(), newRoom);
@@ -99,7 +100,7 @@ namespace SprintBetApi.Controllers
       }
 
       var room = _roomService.GetRoomById(roomId);
-      room.Items = _roomService.GetItemsByRoomType(updatedRoomItemsDto.ItemsType);
+      room.Items = _roomService.GetItemsForRoomType(updatedRoomItemsDto.ItemsType);
       _voterService.ClearVotesByRoomId(room.Id);
 
       await _hubContext.Clients.Group(room.Id).VotingUpdated(_voterService.GetVotersByRoomId(room.Id));

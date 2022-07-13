@@ -10,6 +10,11 @@ namespace SprintBetApi.Dtos
         public string Id { get; set; }
 
         /// <summary>
+        ///     The room's display name
+        /// </summary>
+        public string Name { get; set; }
+
+        /// <summary>
         ///     The ID of the room's Dealer
         /// </summary>
         public string DealerId { get; set; } 

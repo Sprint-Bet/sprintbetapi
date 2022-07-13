@@ -27,14 +27,14 @@ namespace SprintBetApi.Services
         /// </summary>
         /// <param name="roomType"></param>
         /// <returns>The newly created room</returns>
-        public Room AddRoom(RoomType roomType);
+        public Room AddRoom(NewRoomDto newRoomDto);
 
         /// <summary>
         ///     Get a rooms items
         /// </summary>
         /// <param name="roomType"></param>
         /// <returns></returns>
-        public IEnumerable<string> GetItemsByRoomType(RoomType roomType);
+        public IEnumerable<string> GetItemsForRoomType(RoomType roomType);
 
         /// <summary>
         ///     Remove a room

@@ -26,15 +26,16 @@ namespace SprintBetApi.Services
         }
 
         /// <inheritdoc/>
-        public Room AddRoom(RoomType roomType)
+        public Room AddRoom(NewRoomDto newRoomDto)
         {
             var newRoom = new Room
             {
                 Id = DateTimeOffset.Now.ToUnixTimeSeconds().ToString("X").ToLower(),
-                Locked = false
+                Locked = false,
+                Name = newRoomDto.Name
             };
 
-            newRoom.Items = GetItemsByRoomType(roomType);
+            newRoom.Items = GetItemsForRoomType(newRoomDto.ItemsType);
 
             _rooms.Add(newRoom);
 
@@ -42,23 +43,22 @@ namespace SprintBetApi.Services
         }
 
         /// <inheritdoc/>
-        public IEnumerable<string> GetItemsByRoomType(RoomType roomType)
+        public IEnumerable<string> GetItemsForRoomType(RoomType roomType)
         {
             string[] fibonacciItems = { "1", "2", "3", "5", "8", "13", "20", "?" };
             string[] spikeItems = { "1", "2", "3", "4", "5", "6", "7", "8" };
             string[] tshirtItems = { "XXS", "XS", "S", "M", "L", "XL", "XXL", "?" };
 
-            var items = fibonacciItems;
             if (roomType == RoomType.Spike)
             {
-                items = spikeItems;
+                return spikeItems;
             }
             else if (roomType == RoomType.TShirtSizing)
             {
-                items = tshirtItems;
+                return tshirtItems;
             }
 
-            return items;
+            return fibonacciItems;
         }
 
         /// <inheritdoc/>
