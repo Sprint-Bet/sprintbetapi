@@ -24,5 +24,3 @@ FROM base AS final
 WORKDIR /app
 COPY --from=publish /app/publish .
 ENTRYPOINT ["dotnet", "SprintBetApi.dll"]
-
-HEALTHCHECK CMD curl --fail http://localhost:45174/health || exit
